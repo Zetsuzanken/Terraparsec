@@ -97,7 +97,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: RedDwarf
+      name: Star
       rect:
         serializedVersion: 2
         x: 128
@@ -105,7 +105,7 @@ TextureImporter:
         width: 30
         height: 27
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -113,6 +113,27 @@ TextureImporter:
       bones: []
       spriteID: e7a68d66819d3b94c9c6c51cd023bcd9
       internalID: 262518975
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Planet
+      rect:
+        serializedVersion: 2
+        x: 32
+        y: 32
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b6024f839ae1483499872e794f227bc5
+      internalID: -1572939681
       vertices: []
       indices: 
       edges: []
@@ -128,7 +149,8 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      RedDwarf: 262518975
+      Planet: -1572939681
+      Star: 262518975
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

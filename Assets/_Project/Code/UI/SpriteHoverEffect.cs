@@ -2,7 +2,9 @@ using UnityEngine;
 
 public class SpriteHoverEffect : MonoBehaviour
 {
-    private SpriteOutline outline;
+    SpriteOutline outline;
+    bool isSelected;
+    private static bool disableHover = false;
 
     void Start()
     {
@@ -11,11 +13,47 @@ public class SpriteHoverEffect : MonoBehaviour
 
     void OnMouseEnter()
     {
-        outline?.EnableOutline();
+        if (!isSelected && !disableHover)
+        {
+            if (outline != null)
+            {
+                outline.EnableOutline();
+            }
+        }
     }
 
     void OnMouseExit()
     {
-        outline?.DisableOutline();
+        if (!isSelected)
+        {
+            if (outline != null)
+            {
+                outline.DisableOutline();
+            }
+        }
+    }
+
+    public void SetSelected(bool value)
+    {
+        isSelected = value;
+        if (isSelected)
+        {
+            if (outline != null)
+            {
+                outline.EnableOutline();
+            }
+        }
+        else
+        {
+            if (outline != null)
+            {
+                outline.DisableOutline();
+            }
+        }
+    }
+
+    public static void SetHoverEnabled(bool enabled)
+    {
+        disableHover = !enabled;
     }
 }

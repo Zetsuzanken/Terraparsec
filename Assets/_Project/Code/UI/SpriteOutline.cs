@@ -1,12 +1,11 @@
 using UnityEngine;
 
-[ExecuteInEditMode]
 public class SpriteOutline : MonoBehaviour
 {
     public Color color = Color.white;
     [Range(0, 16)] public int outlineSize = 1;
 
-    private SpriteRenderer spriteRenderer;
+    SpriteRenderer spriteRenderer;
 
     void OnEnable()
     {
@@ -24,9 +23,9 @@ public class SpriteOutline : MonoBehaviour
         UpdateOutline(false);
     }
 
-    private void UpdateOutline(bool outline)
+    void UpdateOutline(bool outline)
     {
-        MaterialPropertyBlock mpb = new MaterialPropertyBlock();
+        MaterialPropertyBlock mpb = new();
         spriteRenderer.GetPropertyBlock(mpb);
         mpb.SetFloat("_Outline", outline ? 1f : 0);
         mpb.SetColor("_OutlineColor", color);

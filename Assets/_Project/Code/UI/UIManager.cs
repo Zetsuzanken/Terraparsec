@@ -29,8 +29,20 @@ public class UIManager : MonoBehaviour
     public Button warpCloseButton;
     public float FadeOverlayDuration => fadeOverlayFader.fadeDuration;
 
+    [Header("Warning Panel")]
+    public GameObject warningPanel;
+    public TextMeshProUGUI warningText;
+    public PanelFader warningPanelFader;
+    public Button warningCloseButton;
+    public Button warningWarpButton;
+
+    [Header("Spaceship Reference")]
+    public Transform spaceship;
+
     [Tooltip("Currently selected object for outline logic.")]
     public GameObject currentlySelectedObject;
+
+    private Transform lastClosestObject;
 
     void Awake()
     {
@@ -47,7 +59,17 @@ public class UIManager : MonoBehaviour
         infoCloseButton.onClick.AddListener(CloseAllPanels);
 
         warpCloseButton.onClick.RemoveAllListeners();
-        warpCloseButton.onClick.AddListener(CloseAllPanels);
+        warpCloseButton.onClick.AddListener(ReturnToClosestObject);
+
+        warningCloseButton.onClick.RemoveAllListeners();
+        warningCloseButton.onClick.AddListener(ReturnToClosestObject);
+
+        warningWarpButton.onClick.RemoveAllListeners();
+        warningWarpButton.onClick.AddListener(() =>
+        {
+            CloseWarningPanel();
+            WarpManager.Instance.OpenWarpPanel();
+        });
     }
 
     public void OpenScanPanel(GameObject caller, ICelestialObject data)
@@ -68,7 +90,20 @@ public class UIManager : MonoBehaviour
         scanPanelFader.FadeIn();
         var scanBtn = scanPanel.GetComponentInChildren<Button>();
         scanBtn.onClick.RemoveAllListeners();
-        scanBtn.onClick.AddListener(() => ShowInfoPanel(data));
+        scanBtn.onClick.AddListener(() =>
+        {
+            PlayerResources.Instance.HandleScan();
+            ShowInfoPanel(data);
+        });
+
+        var refuelButton = scanPanel.transform.Find("RefuelButton").GetComponent<Button>();
+        refuelButton.gameObject.SetActive(data is Star);
+
+        refuelButton.onClick.RemoveAllListeners();
+        refuelButton.onClick.AddListener(() =>
+        {
+            PlayerResources.Instance.RefillEnergy();
+        });
     }
 
     public void OpenWarpPanel(List<WarpDestination> warpDestinations)
@@ -94,6 +129,7 @@ public class UIManager : MonoBehaviour
         if (scanPanelFader.GetAlpha() > 0) scanPanelFader.FadeOut();
         if (infoPanelFader.GetAlpha() > 0) infoPanelFader.FadeOut();
         if (warpPanelFader.GetAlpha() > 0) warpPanelFader.FadeOut();
+        if (warningPanelFader.GetAlpha() > 0) warningPanelFader.FadeOut();
 
         Time.timeScale = 1;
         isInteracting = false;
@@ -139,14 +175,12 @@ public class UIManager : MonoBehaviour
         {
             canvasGroup.blocksRaycasts = true;
         }
-
         fadeOverlayFader.FadeIn();
     }
 
     public void FadeOverlayOut()
     {
         fadeOverlayFader.FadeOut();
-
         StartCoroutine(ResetRaycastBlock());
     }
 
@@ -170,5 +204,51 @@ public class UIManager : MonoBehaviour
             }
             currentlySelectedObject = null;
         }
+    }
+
+    public void ShowWarningPanel(Transform closestObject)
+    {
+        lastClosestObject = closestObject;
+        isInteracting = true;
+        Time.timeScale = 0;
+        warningText.text = $"You've traveled too far. Return to {closestObject.name} or warp elsewhere.";
+        warningPanelFader.FadeIn();
+    }
+
+    public void CloseWarningPanel()
+    {
+        if (warningPanelFader.GetAlpha() > 0) warningPanelFader.FadeOut();
+        isInteracting = false;
+    }
+
+    public void ReturnToClosestObject()
+    {
+        if (lastClosestObject != null && spaceship != null)
+        {
+            FadeOverlayIn();
+            // CloseWarningPanel();
+            CloseAllPanels();
+            StartCoroutine(ReturnSequence());
+        }
+    }
+
+    IEnumerator ReturnSequence()
+    {
+        yield return new WaitForSecondsRealtime(FadeOverlayDuration);
+
+        if (lastClosestObject != null && spaceship != null)
+        {
+            spaceship.position = new Vector3(lastClosestObject.position.x, spaceship.position.y, spaceship.position.z);
+            if (Camera.main.TryGetComponent<CameraFollow>(out var camFollow)) camFollow.SnapToTarget();
+
+            if (spaceship.TryGetComponent<Rigidbody2D>(out var rb))
+            {
+                rb.velocity = Vector2.zero;
+                rb.angularVelocity = 0f;
+                rb.Sleep();
+            }
+        }
+        FadeOverlayOut();
+        Time.timeScale = 1;
     }
 }

@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 1504938490092590684}
   - component: {fileID: 6230257536657633282}
   - component: {fileID: 7179731590289229577}
+  - component: {fileID: 7547575469110385652}
   m_Layer: 0
   m_Name: Spaceship
   m_TagString: Player
@@ -171,6 +172,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 790806b925fc2ca479971481cf07d62b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  thrustForce: 5
-  maxSpeed: 10
-  drag: 0.98
+  thrustForce: 1.2
+  maxSpeed: 6
+  deceleration: 5
+--- !u!114 &7547575469110385652
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5937812851959139487}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f1d30cb20ac09c8459b35cc9c8562c3e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  celestialObjects:
+  - {fileID: 0}
+  - {fileID: 0}
+  maxAllowedDistance: 15

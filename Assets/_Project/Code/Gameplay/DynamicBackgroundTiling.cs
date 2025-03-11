@@ -3,9 +3,8 @@ using UnityEngine;
 public class DynamicBackgroundTiling : MonoBehaviour
 {
     public GameObject[] backgroundTiles;
-    public Transform player;
     public float tileWidth = 10.24f;
-    public float buffer = 10f;
+    public float buffer = 10.24f;
 
     void Update()
     {
@@ -16,16 +15,11 @@ public class DynamicBackgroundTiling : MonoBehaviour
     {
         foreach (GameObject tile in backgroundTiles)
         {
-            float distance = tile.transform.position.x - player.position.x;
-
-            if (distance > tileWidth / 2 + buffer)
-            {
+            float distance = tile.transform.position.x - Camera.main.transform.position.x;
+            if (distance > (tileWidth / 2) + buffer)
                 tile.transform.position -= new Vector3(tileWidth * backgroundTiles.Length, 0, 0);
-            }
-            else if (distance < -tileWidth / 2 - buffer)
-            {
+            else if (distance < (-tileWidth / 2) - buffer)
                 tile.transform.position += new Vector3(tileWidth * backgroundTiles.Length, 0, 0);
-            }
         }
     }
 }

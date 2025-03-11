@@ -3,41 +3,44 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "NewPlanet", menuName = "Celestial Object/Planet", order = 1)]
 public class Planet : ScriptableObject, ICelestialObject
 {
+    [Header("General")]
     public string planetName;
-    public string planetType;
-    public string description;
+
+    [Header("Orbital Parameters")]
     public float orbitalDistance;
-    public float orbitalPeriod;
+    public float rotationPeriod;
     public float eccentricity;
+
+    [Header("Physical Characteristics")]
     public float mass;
     public float radius;
-    public float density;
-    public float surfaceGravity;
-    public bool hasAtmosphere;
-    public string atmosphereComposition;
-    public float surfacePressure;
-    public float averageTemperature;
 
-    public string GetName()
-    {
-        return planetName;
-    }
+    public float Density => (radius <= 0) ? 0 : 5.51f * (mass / (radius * radius * radius));
+    public float SurfaceGravity => (radius <= 0) ? 0 : 9.81f * (mass / (radius * radius));
+
+    [Header("Atmosphere")]
+    public bool hasAtmosphere;
+    public string atmosphericComposition;
+    public float surfacePressure;
+
+    [Header("Temperature")]
+    public float averageSurfaceTemperature;
+
+    public string GetName() => planetName;
 
     public string GetDisplayInfo()
     {
-        return $"Name: {planetName}\n" +
-               $"Type: {planetType}\n" +
-               $"Orbital Distance: {orbitalDistance} AU\n" +
-               $"Orbital Period: {orbitalPeriod} Earth days\n" +
-               $"Eccentricity: {eccentricity}\n" +
-               $"Mass: {mass} Earth masses\n" +
-               $"Radius: {radius} Earth radii\n" +
-               $"Density: {density} g/cm^3\n" +
-               $"Surface Gravity: {surfaceGravity} m/s^2\n" +
-               $"Has Atmosphere: {hasAtmosphere}\n" +
-               $"Atmospheric Composition: {atmosphereComposition}\n" +
-               $"Surface Pressure: {surfacePressure} atm\n" +
-               $"Average Temperature: {averageTemperature}K\n" +
-               $"Description: {description}";
+        return
+            $"Name: {planetName}\n" +
+            $"Orbital Distance: {orbitalDistance} AU\n" +
+            $"Rotation Period: {rotationPeriod} hours\n" +
+            $"Eccentricity: {eccentricity}\n" +
+            $"Mass: {mass} Earth masses\n" +
+            $"Radius: {radius} Earth radii\n" +
+            $"Density: {Density:F2} g/cm^3\n" +
+            $"Surface Gravity: {SurfaceGravity:F2} m/s^2\n" +
+            $"Atmospheric Composition: {atmosphericComposition}\n" +
+            $"Surface Pressure: {surfacePressure} atm\n" +
+            $"Average Surface Temperature: {averageSurfaceTemperature} K\n";
     }
 }

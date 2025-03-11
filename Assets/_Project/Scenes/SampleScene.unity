@@ -1054,9 +1054,8 @@ MonoBehaviour:
   - {fileID: 1114909997}
   - {fileID: 1657507855}
   - {fileID: 1228390122}
-  player: {fileID: 940349183}
   tileWidth: 10.24
-  buffer: 12
+  buffer: 10.24
 --- !u!4 &441661187
 Transform:
   m_ObjectHideFlags: 0
@@ -1134,7 +1133,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 11ec009a5968c344f9717655d6441cc9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  objectData: {fileID: 11400000, guid: a04a6a8933e94f943b5e2357dbae2059, type: 2}
+  objectData: {fileID: 0}
 --- !u!61 &449571975
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -2525,6 +2524,75 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
+--- !u!1 &1264269165
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1264269166}
+  - component: {fileID: 1264269167}
+  - component: {fileID: 1264269168}
+  m_Layer: 0
+  m_Name: ProceduralManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1264269166
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1264269165}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1264269167
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1264269165}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c3fac6c11907dcc46b2a6796c052a0b1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  minOrbitalDistance: 0.01
+  maxOrbitalDistance: 1000
+  minEccentricity: 0
+  maxEccentricity: 1
+  minRotationPeriod: 4
+  maxRotationPeriod: 1000
+  atmosphereChance: 0.5
+  minTemperature: 200
+  maxTemperature: 400
+--- !u!114 &1264269168
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1264269165}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2ffbeb90089092a4f80d5f42856db653, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  generator: {fileID: 1264269167}
+  planetObjects:
+  - {fileID: 449571971}
 --- !u!1 &1265676069
 GameObject:
   m_ObjectHideFlags: 0
@@ -4952,4 +5020,5 @@ SceneRoots:
   - {fileID: 1551981754}
   - {fileID: 1764018778}
   - {fileID: 119683891}
+  - {fileID: 1264269166}
   - {fileID: 321489954}

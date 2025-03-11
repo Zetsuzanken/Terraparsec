@@ -11,7 +11,7 @@ public class PlayerDistanceMonitor : MonoBehaviour
 
     private Transform closestObject;
     private Transform spaceship;
-    private bool isWarningActive = false;
+    private bool warningActive = false;
 
     void Awake()
     {
@@ -30,15 +30,14 @@ public class PlayerDistanceMonitor : MonoBehaviour
         if (closestObject == null) return;
 
         float distance = Vector2.Distance(spaceship.position, closestObject.position);
-
-        if (distance > maxAllowedDistance && !isWarningActive)
+        if (distance > maxAllowedDistance && !warningActive)
         {
-            isWarningActive = true;
+            warningActive = true;
             UIManager.Instance.ShowWarningPanel(closestObject);
         }
-        else if (distance <= maxAllowedDistance && isWarningActive)
+        else if (distance <= maxAllowedDistance && warningActive)
         {
-            isWarningActive = false;
+            warningActive = false;
         }
     }
 
@@ -46,7 +45,6 @@ public class PlayerDistanceMonitor : MonoBehaviour
     {
         float minDistance = Mathf.Infinity;
         Transform nearest = null;
-
         foreach (var obj in celestialObjects)
         {
             float dist = Vector2.Distance(spaceship.position, obj.position);
@@ -56,13 +54,12 @@ public class PlayerDistanceMonitor : MonoBehaviour
                 nearest = obj;
             }
         }
-
         return nearest;
     }
 
     public void UpdateClosestObject(Transform newClosest)
     {
         closestObject = newClosest;
-        isWarningActive = false;
+        warningActive = false;
     }
 }

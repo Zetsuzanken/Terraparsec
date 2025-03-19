@@ -2,13 +2,13 @@ using UnityEngine;
 
 public class SpaceshipController : MonoBehaviour
 {
-    public float thrustForce = 5f;
-    public float maxSpeed = 10f;
-    public float deceleration = 0.5f;
+    public float thrustForce = 1.5f;
+    public float maxSpeed = 7f;
+    public float deceleration = 10f;
 
     private Rigidbody2D rb;
 
-    void Start()
+    private void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         rb.gravityScale = 0;
@@ -16,14 +16,14 @@ public class SpaceshipController : MonoBehaviour
         rb.angularDrag = 0;
     }
 
-    void Update()
+    private void Update()
     {
         HandleThrust();
         HandleRotation();
         HandleDeceleration();
     }
 
-    void HandleThrust()
+    private void HandleThrust()
     {
         float input = Input.GetAxis("Horizontal");
 
@@ -35,7 +35,7 @@ public class SpaceshipController : MonoBehaviour
         rb.velocity = new Vector2(Mathf.Clamp(rb.velocity.x, -maxSpeed, maxSpeed), rb.velocity.y);
     }
 
-    void HandleRotation()
+    private void HandleRotation()
     {
         if (rb.velocity.x > 0.1f)
         {
@@ -47,7 +47,7 @@ public class SpaceshipController : MonoBehaviour
         }
     }
 
-    void HandleDeceleration()
+    private void HandleDeceleration()
     {
         if (Mathf.Abs(Input.GetAxis("Horizontal")) < 0.1f)
         {

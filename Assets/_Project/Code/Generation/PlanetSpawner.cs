@@ -2,10 +2,8 @@ using UnityEngine;
 
 public class PlanetSpawner : MonoBehaviour
 {
-    [Tooltip("Reference to the PlanetGenerator in the scene.")]
     public PlanetGenerator generator;
-
-    [Tooltip("A list of planet GameObjects that already exist in the scene.")]
+    public SpriteClassifier spriteClassifier;
     public GameObject[] planetObjects;
 
     void Start()
@@ -13,6 +11,7 @@ public class PlanetSpawner : MonoBehaviour
         foreach (GameObject planetGO in planetObjects)
         {
             generator.AssignPlanetData(planetGO);
+            spriteClassifier.AssignSprite(planetGO);
         }
     }
 }

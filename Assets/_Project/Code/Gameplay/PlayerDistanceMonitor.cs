@@ -57,6 +57,13 @@ public class PlayerDistanceMonitor : MonoBehaviour
         return nearest;
     }
 
+    public Warpable GetClosestWarpable()
+    {
+        if (closestObject == null) return null;
+        closestObject.TryGetComponent<Warpable>(out var w);
+        return w;
+    }
+
     public void UpdateClosestObject(Transform newClosest)
     {
         closestObject = newClosest;

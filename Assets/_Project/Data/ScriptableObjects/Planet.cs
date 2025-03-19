@@ -5,6 +5,7 @@ public class Planet : ScriptableObject, ICelestialObject
 {
     [Header("General")]
     public string planetName;
+    public bool generatedAsHabitable = false;
 
     [Header("Orbital Parameters")]
     public float orbitalDistance;
@@ -26,12 +27,9 @@ public class Planet : ScriptableObject, ICelestialObject
     [Header("Temperature")]
     public float averageSurfaceTemperature;
 
-    public string GetName() => planetName;
+    public string Name => planetName;
 
-    public string GetDisplayInfo()
-    {
-        return
-            $"Name: {planetName}\n" +
+    public string DisplayInfo => $"Name: {planetName}\n" +
             $"Orbital Distance: {orbitalDistance} AU\n" +
             $"Rotation Period: {rotationPeriod} hours\n" +
             $"Eccentricity: {eccentricity}\n" +
@@ -42,5 +40,4 @@ public class Planet : ScriptableObject, ICelestialObject
             $"Atmospheric Composition: {atmosphericComposition}\n" +
             $"Surface Pressure: {surfacePressure} atm\n" +
             $"Average Surface Temperature: {averageSurfaceTemperature} K\n";
-    }
 }

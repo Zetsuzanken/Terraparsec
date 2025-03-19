@@ -1,3 +1,9 @@
+// Sprite Outline Effect
+// Based on an outline shader originally written by Nielson
+// (formerly at http://nielson.io/2016/04/2d-sprite-outlines-in-unity/, now unavailable)
+// Archived by Mandarinx: https://gist.github.com/mandarinx/f28931faa3c6a5378978a82c84d3dbcd
+// Slightly modified by me for my thesis project (Terraparsec), primarily for compatibility with the latest Unity version.
+
 Shader "Sprites/Outline"
 {
 	Properties

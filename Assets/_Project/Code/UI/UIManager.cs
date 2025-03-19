@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using TMPro;
 using System.Collections.Generic;
@@ -20,6 +21,12 @@ public class UIManager : MonoBehaviour
     public Button scanCloseButton;
     public Button infoCloseButton;
 
+    [Header("Secondary Action Button (Refuel/Mark)")]
+    public Button secondaryActionButton;
+
+    [Header("Check Planet Button")]
+    public Button checkPlanetButton;
+
     [Header("Warp Panel & Overlay")]
     public GameObject warpPanel;
     public Transform destinationListParent;
@@ -27,6 +34,8 @@ public class UIManager : MonoBehaviour
     public PanelFader warpPanelFader;
     public PanelFader fadeOverlayFader;
     public Button warpCloseButton;
+    public Sprite placeholderSprite;
+
     public float FadeOverlayDuration => fadeOverlayFader.fadeDuration;
 
     [Header("Warning Panel")]
@@ -36,6 +45,20 @@ public class UIManager : MonoBehaviour
     public Button warningCloseButton;
     public Button warningWarpButton;
 
+    [Header("Confirm Panel")]
+    public GameObject confirmPanel;
+    public TextMeshProUGUI confirmText;
+    public PanelFader confirmPanelFader;
+    public Button confirmButton;
+    public Button confirmCloseButton;
+
+    [Header("End Game Panel")]
+    public GameObject endGamePanel;
+    public PanelFader endGamePanelFader;
+    public TextMeshProUGUI endGameText;
+    public Button restartButton;
+    public Button mainMenuButton;
+
     [Header("Spaceship Reference")]
     public Transform spaceship;
 
@@ -43,20 +66,33 @@ public class UIManager : MonoBehaviour
     public GameObject currentlySelectedObject;
 
     private Transform lastClosestObject;
+    private Planet pendingPlanetMark;
 
-    void Awake()
+    [HideInInspector]
+    public bool gameHasEnded = false;
+
+    private void Awake()
     {
-        if (Instance == null) Instance = this;
-        else Destroy(gameObject);
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
     }
 
-    void Start()
+    private void Start()
     {
         scanCloseButton.onClick.RemoveAllListeners();
         scanCloseButton.onClick.AddListener(CloseAllPanels);
 
         infoCloseButton.onClick.RemoveAllListeners();
         infoCloseButton.onClick.AddListener(CloseAllPanels);
+
+        checkPlanetButton.onClick.RemoveAllListeners();
+        checkPlanetButton.onClick.AddListener(OnCheckPlanetButtonClicked);
 
         warpCloseButton.onClick.RemoveAllListeners();
         warpCloseButton.onClick.AddListener(ReturnToClosestObject);
@@ -68,13 +104,32 @@ public class UIManager : MonoBehaviour
         warningWarpButton.onClick.AddListener(() =>
         {
             CloseWarningPanel();
-            WarpManager.Instance.OpenWarpPanel();
+
+            if (PlayerDistanceMonitor.Instance.GetClosestWarpable() != null)
+            {
+                WarpManager.Instance.OpenWarpPanel(PlayerDistanceMonitor.Instance.GetClosestWarpable());
+            }
         });
+
+        confirmButton.onClick.RemoveAllListeners();
+        confirmButton.onClick.AddListener(ConfirmMarkPlanet);
+
+        confirmCloseButton.onClick.RemoveAllListeners();
+        confirmCloseButton.onClick.AddListener(CloseConfirmPanel);
+
+        restartButton.onClick.RemoveAllListeners();
+        restartButton.onClick.AddListener(RestartGame);
+
+        mainMenuButton.onClick.RemoveAllListeners();
+        mainMenuButton.onClick.AddListener(GoToMainMenu);
     }
 
     public void OpenScanPanel(GameObject caller, ICelestialObject data)
     {
-        if (isInteracting) return;
+        if (isInteracting)
+        {
+            return;
+        }
 
         DeselectPreviousObject();
         currentlySelectedObject = caller;
@@ -90,46 +145,141 @@ public class UIManager : MonoBehaviour
         scanPanelFader.FadeIn();
         var scanBtn = scanPanel.GetComponentInChildren<Button>();
         scanBtn.onClick.RemoveAllListeners();
-        scanBtn.onClick.AddListener(() =>
-        {
-            PlayerResources.Instance.HandleScan();
-            ShowInfoPanel(data);
-        });
 
-        var refuelButton = scanPanel.transform.Find("RefuelButton").GetComponent<Button>();
-        refuelButton.gameObject.SetActive(data is Star);
-
-        refuelButton.onClick.RemoveAllListeners();
-        refuelButton.onClick.AddListener(() =>
+        bool isEarth = (caller.CompareTag("Finish"));
+        if (isEarth)
         {
-            PlayerResources.Instance.RefillEnergy();
-        });
+            scanBtn.onClick.AddListener(() =>
+            {
+                ShowInfoPanel(data);
+            });
+
+            var btnText = secondaryActionButton.GetComponentInChildren<TextMeshProUGUI>();
+            btnText.text = "End Journey";
+
+            bool planetMarked = (PlanetMarker.Instance.chosenPlanet != null);
+            secondaryActionButton.interactable = planetMarked;
+
+            secondaryActionButton.onClick.RemoveAllListeners();
+            secondaryActionButton.onClick.AddListener(() =>
+            {
+                OpenConfirmEndJourney();
+            });
+        }
+        else
+        {
+            scanBtn.onClick.AddListener(() =>
+            {
+                PlayerResources.Instance.HandleScan();
+                ShowInfoPanel(data);
+            });
+
+            secondaryActionButton.onClick.RemoveAllListeners();
+
+            if (data is Star)
+            {
+                var buttonText = secondaryActionButton.GetComponentInChildren<TextMeshProUGUI>();
+                buttonText.text = "Refuel";
+                secondaryActionButton.interactable = true;
+
+                secondaryActionButton.onClick.AddListener(() =>
+                {
+                    PlayerResources.Instance.RefillEnergy();
+                });
+            }
+            else if (data is Planet planetData)
+            {
+                var buttonText = secondaryActionButton.GetComponentInChildren<TextMeshProUGUI>();
+                buttonText.text = "Mark";
+                secondaryActionButton.interactable = true;
+
+                secondaryActionButton.onClick.AddListener(() =>
+                {
+                    if (PlanetMarker.Instance.chosenPlanet != null)
+                    {
+                        OpenConfirmPanel(planetData);
+                    }
+                    else
+                    {
+                        PlanetMarker.Instance.MarkPlanet(planetData);
+                    }
+                });
+            }
+        }
     }
 
-    public void OpenWarpPanel(List<WarpDestination> warpDestinations)
+    public void OpenWarpPanel(List<Warpable> warpables)
     {
-        if (isInteracting) return;
+        if (isInteracting)
+        {
+            return;
+        }
 
         isInteracting = true;
         Time.timeScale = 0;
 
-        PopulateWarpPanel(warpDestinations);
+        foreach (Transform child in destinationListParent)
+        {
+            Destroy(child.gameObject);
+        }
+
+        foreach (var w in warpables)
+        {
+            var newButtonObj = Instantiate(destinationButtonPrefab, destinationListParent);
+            var button = newButtonObj.GetComponent<Button>();
+
+            var icon = newButtonObj.transform.Find("Icon").GetComponent<Image>();
+            var label = newButtonObj.transform.Find("Label").GetComponent<TextMeshProUGUI>();
+
+
+            if (!w.isStar && !w.visited)
+            {
+                icon.sprite = placeholderSprite;
+            }
+            else
+            {
+                icon.sprite = w.warpIcon;
+            }
+
+            label.text = w.warpName;
+
+            button.onClick.AddListener(() =>
+            {
+                WarpManager.Instance.WarpTo(w);
+            });
+        }
+
         warpPanelFader.FadeIn();
     }
 
     public void ShowInfoPanel(ICelestialObject data)
     {
-        infoText.text = data.GetDisplayInfo();
+        infoText.text = data.DisplayInfo;
         scanPanelFader.FadeOut();
         infoPanelFader.FadeIn();
     }
 
     public void CloseAllPanels()
     {
-        if (scanPanelFader.GetAlpha() > 0) scanPanelFader.FadeOut();
-        if (infoPanelFader.GetAlpha() > 0) infoPanelFader.FadeOut();
-        if (warpPanelFader.GetAlpha() > 0) warpPanelFader.FadeOut();
-        if (warningPanelFader.GetAlpha() > 0) warningPanelFader.FadeOut();
+        if (scanPanelFader.GetAlpha() > 0)
+        {
+            scanPanelFader.FadeOut();
+        }
+
+        if (infoPanelFader.GetAlpha() > 0)
+        {
+            infoPanelFader.FadeOut();
+        }
+
+        if (warpPanelFader.GetAlpha() > 0)
+        {
+            warpPanelFader.FadeOut();
+        }
+
+        if (warningPanelFader.GetAlpha() > 0)
+        {
+            warningPanelFader.FadeOut();
+        }
 
         Time.timeScale = 1;
         isInteracting = false;
@@ -141,31 +291,6 @@ public class UIManager : MonoBehaviour
                 hoverEffect.SetSelected(false);
             }
             currentlySelectedObject = null;
-        }
-    }
-
-    void PopulateWarpPanel(List<WarpDestination> warpDestinations)
-    {
-        foreach (Transform child in destinationListParent)
-        {
-            Destroy(child.gameObject);
-        }
-
-        foreach (var dest in warpDestinations)
-        {
-            var newButtonObj = Instantiate(destinationButtonPrefab, destinationListParent);
-            var button = newButtonObj.GetComponent<Button>();
-
-            var icon = newButtonObj.transform.Find("Icon").GetComponent<Image>();
-            var label = newButtonObj.transform.Find("Label").GetComponent<TextMeshProUGUI>();
-
-            icon.sprite = dest.destinationSprite;
-            label.text = dest.destinationName;
-
-            button.onClick.AddListener(() =>
-            {
-                WarpManager.Instance.WarpTo(dest);
-            });
         }
     }
 
@@ -211,13 +336,24 @@ public class UIManager : MonoBehaviour
         lastClosestObject = closestObject;
         isInteracting = true;
         Time.timeScale = 0;
-        warningText.text = $"You've traveled too far. Return to {closestObject.name} or warp elsewhere.";
+
+        string objectName = closestObject.name;
+        if (closestObject.TryGetComponent<ObjectClickHandler>(out var oh) && oh.objectData is ICelestialObject co)
+        {
+            objectName = co.Name;
+        }
+
+        warningText.text = $"You've traveled too far. Return to {objectName} or warp elsewhere.";
         warningPanelFader.FadeIn();
     }
 
     public void CloseWarningPanel()
     {
-        if (warningPanelFader.GetAlpha() > 0) warningPanelFader.FadeOut();
+        if (warningPanelFader.GetAlpha() > 0)
+        {
+            warningPanelFader.FadeOut();
+        }
+
         isInteracting = false;
     }
 
@@ -226,20 +362,22 @@ public class UIManager : MonoBehaviour
         if (lastClosestObject != null && spaceship != null)
         {
             FadeOverlayIn();
-            // CloseWarningPanel();
             CloseAllPanels();
             StartCoroutine(ReturnSequence());
         }
     }
 
-    IEnumerator ReturnSequence()
+    private IEnumerator ReturnSequence()
     {
         yield return new WaitForSecondsRealtime(FadeOverlayDuration);
 
         if (lastClosestObject != null && spaceship != null)
         {
             spaceship.position = new Vector3(lastClosestObject.position.x, spaceship.position.y, spaceship.position.z);
-            if (Camera.main.TryGetComponent<CameraFollow>(out var camFollow)) camFollow.SnapToTarget();
+            if (Camera.main.TryGetComponent<CameraFollow>(out var camFollow))
+            {
+                camFollow.SnapToTarget();
+            }
 
             if (spaceship.TryGetComponent<Rigidbody2D>(out var rb))
             {
@@ -250,5 +388,94 @@ public class UIManager : MonoBehaviour
         }
         FadeOverlayOut();
         Time.timeScale = 1;
+    }
+
+    public void OnCheckPlanetButtonClicked()
+    {
+        infoText.text = PlanetMarker.Instance.chosenPlanet == null
+            ? "You haven't marked any planet yet!"
+            : PlanetMarker.Instance.chosenPlanet.DisplayInfo;
+
+        CloseAllPanels();
+        isInteracting = true;
+        Time.timeScale = 0;
+
+        infoPanelFader.FadeIn();
+    }
+
+    public void OpenConfirmPanel(Planet planetToMark)
+    {
+        pendingPlanetMark = planetToMark;
+        confirmPanelFader.FadeIn();
+        isInteracting = true;
+    }
+
+    public void CloseConfirmPanel()
+    {
+        confirmPanelFader.FadeOut();
+        isInteracting = false;
+    }
+
+    public void ConfirmMarkPlanet()
+    {
+        PlanetMarker.Instance.MarkPlanet(pendingPlanetMark);
+        CloseConfirmPanel();
+    }
+
+    public void OpenConfirmEndJourney()
+    {
+        confirmPanelFader.FadeIn();
+        isInteracting = true;
+
+        confirmText.text = "Are you sure you want to end your journey?";
+
+        confirmButton.onClick.RemoveAllListeners();
+        confirmButton.onClick.AddListener(() =>
+        {
+            EndJourney();
+        });
+
+        confirmCloseButton.onClick.RemoveAllListeners();
+        confirmCloseButton.onClick.AddListener(CloseConfirmPanel);
+    }
+
+    private void EndJourney()
+    {
+        CloseConfirmPanel();
+        Planet chosen = PlanetMarker.Instance.chosenPlanet;
+
+        ScorePanelController scoreCtrl = FindObjectOfType<ScorePanelController>();
+        scoreCtrl.ShowScorePanel(chosen);
+    }
+
+    public void TriggerGameOver(string reason)
+    {
+        gameHasEnded = true;
+
+        CloseAllPanels();
+        FadeOverlayIn();
+        StartCoroutine(ShowEndGame(reason));
+    }
+
+    private IEnumerator ShowEndGame(string reason)
+    {
+        yield return new WaitForSecondsRealtime(FadeOverlayDuration);
+
+        endGameText.text = reason;
+        endGamePanelFader.FadeIn();
+        isInteracting = true;
+        Time.timeScale = 0;
+    }
+
+    public void RestartGame()
+    {
+        Time.timeScale = 1;
+        SceneManager.LoadScene("Gameplay");
+    }
+
+    public void GoToMainMenu()
+    {
+        Time.timeScale = 1;
+        SceneManager.LoadScene("MainMenu");
     }
 }

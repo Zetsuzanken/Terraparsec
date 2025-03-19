@@ -19,7 +19,7 @@ public class CameraFollow : MonoBehaviour
     public void SnapToTarget()
     {
         if (target == null) return;
-        Vector3 snapPosition = new(target.position.x + offset.x, transform.position.y, transform.position.z);
+        Vector3 snapPosition = new(target.position.x + offset.x, target.position.y + offset.y, transform.position.z);
         transform.position = snapPosition;
     }
 }

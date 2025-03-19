@@ -3,8 +3,8 @@ using UnityEngine;
 public class DynamicBackgroundTiling : MonoBehaviour
 {
     public GameObject[] backgroundTiles;
-    public float tileWidth = 10.24f;
-    public float buffer = 10.24f;
+    public float tileWidth = 19.2f;
+    public float buffer = 19.2f;
 
     void Update()
     {
@@ -13,13 +13,23 @@ public class DynamicBackgroundTiling : MonoBehaviour
 
     void RepositionTiles()
     {
+        var camPos = Camera.main.transform.position;
+
         foreach (GameObject tile in backgroundTiles)
         {
-            float distance = tile.transform.position.x - Camera.main.transform.position.x;
-            if (distance > (tileWidth / 2) + buffer)
+            Vector3 tilePos = tile.transform.position;
+            tilePos.y = camPos.y;
+            tile.transform.position = tilePos;
+
+            float distanceX = tile.transform.position.x - camPos.x;
+            if (distanceX > (tileWidth / 2) + buffer)
+            {
                 tile.transform.position -= new Vector3(tileWidth * backgroundTiles.Length, 0, 0);
-            else if (distance < (-tileWidth / 2) - buffer)
+            }
+            else if (distanceX < (-tileWidth / 2) - buffer)
+            {
                 tile.transform.position += new Vector3(tileWidth * backgroundTiles.Length, 0, 0);
+            }
         }
     }
 }

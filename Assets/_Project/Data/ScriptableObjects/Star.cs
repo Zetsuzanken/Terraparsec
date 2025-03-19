@@ -1,35 +1,63 @@
 using UnityEngine;
+using System.Collections.Generic;
 
 [CreateAssetMenu(fileName = "NewStar", menuName = "Celestial Object/Star", order = 1)]
 public class Star : ScriptableObject, ICelestialObject
 {
-    public string objectName;
-    public string starType;
-    public float mass;
-    public float radius;
-    public float surfaceTemperature;
-    public float luminosity;
-    public float age;
-    public string lifecycleStage;
-    public string color;
-    public string description;
+    public string starSystemID;
+    public string starName;
 
-    public string GetName()
+    private static readonly string[] starNames = new string[]
     {
-        return objectName;
+        "Sirius", "Canopus", "Arcturus", "Vega", "Capella", "Rigel", "Procyon", "Betelgeuse",
+        "Altair", "Aldebaran", "Spica", "Antares", "Pollux", "Fomalhaut", "Deneb", "Regulus",
+        "Castor", "Mirach", "Algol", "Alpheratz", "Bellatrix", "Elnath", "Alnitak", "Saiph"
+    };
+
+    private static readonly HashSet<string> usedNames = new();
+
+    public void AssignRandomName()
+    {
+        if (!string.IsNullOrEmpty(starName))
+        {
+            return;
+        }
+
+        while (true)
+        {
+            if (!usedNames.Contains(starNames[Random.Range(0, starNames.Length)]))
+            {
+                usedNames.Add(starNames[Random.Range(0, starNames.Length)]);
+                starName = starNames[Random.Range(0, starNames.Length)];
+                break;
+            }
+        }
     }
 
-    public string GetDisplayInfo()
+    public string Name => starName;
+
+    public string DisplayInfo => $"Name: {starName}" + "\n" + (CountHabitablePlanetsInSystem() == 1
+                ? "This star system contains 1 potentially habitable exoplanet."
+                : $"This star system contains {CountHabitablePlanetsInSystem()} potentially habitable exoplanets.");
+
+    private int CountHabitablePlanetsInSystem()
     {
-        return $"Name: {objectName}\n" +
-               $"Type: {starType}\n" +
-               $"Mass: {mass} solar masses\n" +
-               $"Radius: {radius} solar radii\n" +
-               $"Temperature: {surfaceTemperature}K\n" +
-               $"Luminosity: {luminosity} times the Sun's luminosity\n" +
-               $"Age: {age} billion years\n" +
-               $"Lifecycle Stage: {lifecycleStage}\n" +
-               $"Color: {color}\n" +
-               $"Description: {description}";
+        int count = 0;
+
+        foreach (Warpable w in FindObjectsOfType<Warpable>())
+        {
+            if (w.starSystemID != starSystemID)
+            {
+                continue;
+            }
+
+            if (w.TryGetComponent(out ObjectClickHandler handler) &&
+                handler.objectData is Planet planet &&
+                planet.generatedAsHabitable)
+            {
+                count++;
+            }
+        }
+        return count;
     }
 }

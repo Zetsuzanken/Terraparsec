@@ -2,7 +2,6 @@ using UnityEngine;
 
 public class ObjectClickHandler : MonoBehaviour
 {
-    [Tooltip("Reference to the data implementing ICelestialObject.")]
     public ScriptableObject objectData;
 
     void OnMouseDown()

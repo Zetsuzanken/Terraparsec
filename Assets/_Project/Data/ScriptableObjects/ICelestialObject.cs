@@ -1,5 +1,5 @@
 public interface ICelestialObject
 {
-    string GetDisplayInfo();
-    string GetName();
+    string DisplayInfo { get; }
+    string Name { get; }
 }

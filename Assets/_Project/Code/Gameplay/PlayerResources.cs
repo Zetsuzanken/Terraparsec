@@ -9,15 +9,15 @@ public class PlayerResources : MonoBehaviour
     [Header("Energy Settings")]
     public float maxEnergy = 100f;
     public float energy;
-    public float scanEnergyCost = 10f;
-    public float warpEnergyCost = 15f;
+    public float scanEnergyCost = 5f;
+    public float warpEnergyCost = 10f;
 
     [Header("Time Settings")]
-    public float maxTime = 600f;
+    public float maxTime = 900f;
     public float timeRemaining;
     public float warpTimePenalty = 5f;
 
-    private bool isTimeRunning = true;
+    private bool isTimeRunning = false;
 
     public event Action<float> OnTimeUpdated;
     public event Action<float> OnEnergyUpdated;
@@ -32,10 +32,18 @@ public class PlayerResources : MonoBehaviour
     {
         energy = maxEnergy;
         timeRemaining = maxTime;
-        StartCoroutine(CountdownTimer());
     }
 
-    IEnumerator CountdownTimer()
+    public void StartTimer()
+    {
+        if (!isTimeRunning)
+        {
+            isTimeRunning = true;
+            StartCoroutine(CountdownTimer());
+        }
+    }
+
+    private IEnumerator CountdownTimer()
     {
         while (isTimeRunning)
         {
@@ -54,16 +62,17 @@ public class PlayerResources : MonoBehaviour
         }
     }
 
-    public bool CanScan() => energy >= scanEnergyCost;
-
-    public bool CanWarp() => energy >= warpEnergyCost;
-
     public void UseEnergy(float amount)
     {
         energy -= amount;
         if (energy < 0) energy = 0;
 
         OnEnergyUpdated?.Invoke(energy);
+
+        if (energy <= 0)
+        {
+            UIManager.Instance.TriggerGameOver("You ran out of energy and must now spend an eternity in the cold vacuum of space!");
+        }
     }
 
     public void DeductTime(float amount)
@@ -81,37 +90,28 @@ public class PlayerResources : MonoBehaviour
 
     public void HandleScan()
     {
-        if (CanScan())
-        {
-            UseEnergy(scanEnergyCost);
-        }
-        else
-        {
-            Debug.LogWarning("Not enough energy to scan!");
-        }
+        UseEnergy(scanEnergyCost);
     }
 
     public void HandleWarp()
     {
-        if (CanWarp())
-        {
-            UseEnergy(warpEnergyCost);
-            DeductTime(warpTimePenalty);
-        }
-        else
-        {
-            Debug.LogWarning("Not enough energy to warp!");
-        }
+        UseEnergy(warpEnergyCost);
+        DeductTime(warpTimePenalty);
     }
 
     private void HandleTimeExpired()
     {
-        Debug.LogWarning("Time is up! Implement game over logic here.");
+        UIManager.Instance.TriggerGameOver("You ran out of time! Earth may not survive...");
     }
 
     public void RefillEnergy()
     {
         energy = maxEnergy;
         OnEnergyUpdated?.Invoke(energy);
+    }
+
+    public bool WouldBeStrandedAfterUse(float useAmount)
+    {
+        return (energy - useAmount < warpEnergyCost);
     }
 }

@@ -6626,8 +6626,8 @@ RectTransform:
   m_GameObject: {fileID: 683742007}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 1.1, y: 1.1, z: 1.1}
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 1702856616}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -10926,6 +10926,15 @@ MonoBehaviour:
   - {fileID: 1317668801}
   - {fileID: 943839620}
   - {fileID: 320530083}
+  - {fileID: 180329608}
+  - {fileID: 1583842400}
+  - {fileID: 580141652}
+  - {fileID: 1579699309}
+  - {fileID: 1588676539}
+  - {fileID: 1814169019}
+  - {fileID: 808033577}
+  - {fileID: 781566345}
+  - {fileID: 600977018}
 --- !u!114 &1264269169
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -18463,6 +18472,15 @@ MonoBehaviour:
   - {fileID: 1317668802}
   - {fileID: 943839621}
   - {fileID: 320530084}
+  - {fileID: 180329609}
+  - {fileID: 1583842401}
+  - {fileID: 580141653}
+  - {fileID: 1579699310}
+  - {fileID: 1588676540}
+  - {fileID: 1814169020}
+  - {fileID: 808033578}
+  - {fileID: 781566346}
+  - {fileID: 600977019}
   maxAllowedDistance: 15
 --- !u!114 &6780283937241344907
 MonoBehaviour:
@@ -18476,9 +18494,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 790806b925fc2ca479971481cf07d62b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  thrustForce: 1.5
-  maxSpeed: 7
-  deceleration: 10
+  thrustForce: 4
+  maxSpeed: 8
+  deceleration: 20
 --- !u!212 &7152618153393269472
 SpriteRenderer:
   m_ObjectHideFlags: 0

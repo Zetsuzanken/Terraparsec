@@ -61,6 +61,5 @@ public class MainMenuController : MonoBehaviour
     public void OnExitButton()
     {
         Application.Quit();
-        UnityEditor.EditorApplication.isPlaying = false;
     }
 }

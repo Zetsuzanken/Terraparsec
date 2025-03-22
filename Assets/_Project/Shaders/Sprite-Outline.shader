@@ -53,30 +53,46 @@ Shader "Sprites/Outline"
 			int _OutlineSize;
 			float4 _MainTex_TexelSize;
 
+			inline bool IsOutOfRange(float2 uv)
+            {
+                return (uv.x < 0.0 || uv.x > 1.0 || uv.y < 0.0 || uv.y > 1.0);
+            }
+
 			fixed4 frag(v2f IN) : SV_Target
 			{
 				fixed4 c = SampleSpriteTexture(IN.texcoord) * IN.color;
 
-				if (_Outline > 0 && c.a != 0) {
-					float totalAlpha = 1.0;
+				if (_Outline > 0 && c.a != 0)
+				{
+					float outline = 0.0;
 
 					[unroll(16)]
-					for (int i = 1; i < _OutlineSize + 1; i++) {
-						fixed4 pixelUp = tex2D(_MainTex, IN.texcoord + fixed2(0, i * _MainTex_TexelSize.y));
-						fixed4 pixelDown = tex2D(_MainTex, IN.texcoord - fixed2(0,i *  _MainTex_TexelSize.y));
-						fixed4 pixelRight = tex2D(_MainTex, IN.texcoord + fixed2(i * _MainTex_TexelSize.x, 0));
-						fixed4 pixelLeft = tex2D(_MainTex, IN.texcoord - fixed2(i * _MainTex_TexelSize.x, 0));
+					for (int i = 1; i <= _OutlineSize; i++)
+					{
+						float2 uvUp    = IN.texcoord + float2(0,  i * _MainTex_TexelSize.y);
+						float2 uvDown  = IN.texcoord - float2(0,  i * _MainTex_TexelSize.y);
+						float2 uvRight = IN.texcoord + float2(i * _MainTex_TexelSize.x, 0);
+						float2 uvLeft  = IN.texcoord - float2(i * _MainTex_TexelSize.x, 0);
 
-						totalAlpha = totalAlpha * pixelUp.a * pixelDown.a * pixelRight.a * pixelLeft.a;
+						float alphaUp    = IsOutOfRange(uvUp)    ? 0.0 : tex2D(_MainTex, uvUp).a;
+						float alphaDown  = IsOutOfRange(uvDown)  ? 0.0 : tex2D(_MainTex, uvDown).a;
+						float alphaRight = IsOutOfRange(uvRight) ? 0.0 : tex2D(_MainTex, uvRight).a;
+						float alphaLeft  = IsOutOfRange(uvLeft)  ? 0.0 : tex2D(_MainTex, uvLeft).a;
+
+						float minAlpha = min(min(alphaUp, alphaDown), min(alphaRight, alphaLeft));
+						if (minAlpha == 0.0)
+						{
+							outline = 1.0;
+						}
 					}
 
-					if (totalAlpha == 0) {
-						c.rgba = fixed4(1, 1, 1, 1) * _OutlineColor;
+					if (outline > 0.0) 
+					{
+						c = _OutlineColor; 
 					}
 				}
 
 				c.rgb *= c.a;
-
 				return c;
 			}
 		ENDCG

@@ -6,8 +6,6 @@ public class BrochureController : MonoBehaviour
     [Header("References to the Brochure UI")]
     public GameObject brochurePanel;
     public PanelFader brochurePanelFader;
-
-    [Tooltip("All the pages, including TitlePage, Page1, Page2, etc.")]
     public GameObject[] pages;
 
     [Header("Navigation Buttons")]
@@ -21,7 +19,7 @@ public class BrochureController : MonoBehaviour
     private int currentPageIndex = 0;
     private bool isOpen = false;
 
-    void Start()
+    private void Start()
     {
         for (int i = 0; i < pages.Length; i++)
         {
@@ -55,7 +53,15 @@ public class BrochureController : MonoBehaviour
 
     public void OpenBrochure()
     {
-        if (isOpen) return;
+        if (WarpManager.Instance.hasLeftEarth)
+        {
+            PlayerResources.Instance.DeductTime(5f);
+        }
+
+        if (isOpen)
+        {
+            return;
+        }
 
         isOpen = true;
         Time.timeScale = 0;
@@ -68,7 +74,10 @@ public class BrochureController : MonoBehaviour
 
     public void CloseBrochure()
     {
-        if (!isOpen) return;
+        if (!isOpen)
+        {
+            return;
+        }
 
         brochurePanelFader.FadeOut();
 
@@ -76,7 +85,7 @@ public class BrochureController : MonoBehaviour
         Time.timeScale = 1;
     }
 
-    void OnNextClicked()
+    private void OnNextClicked()
     {
         if (currentPageIndex < pages.Length - 1)
         {
@@ -86,7 +95,7 @@ public class BrochureController : MonoBehaviour
         }
     }
 
-    void OnPreviousClicked()
+    private void OnPreviousClicked()
     {
         if (currentPageIndex > 0)
         {
@@ -96,9 +105,12 @@ public class BrochureController : MonoBehaviour
         }
     }
 
-    void ShowPage(int index)
+    private void ShowPage(int index)
     {
-        if (index < 0 || index >= pages.Length) return;
+        if (index < 0 || index >= pages.Length)
+        {
+            return;
+        }
 
         for (int i = 0; i < pages.Length; i++)
         {

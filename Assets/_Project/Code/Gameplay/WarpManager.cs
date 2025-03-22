@@ -12,7 +12,9 @@ public class WarpManager : MonoBehaviour
 
     private Warpable earthWarpable;
     private Warpable currentDepartingObject = null;
-    private bool hasLeftEarth = false;
+
+    [HideInInspector]
+    public bool hasLeftEarth = false;
 
     private void Awake()
     {

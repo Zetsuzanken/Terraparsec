@@ -13,7 +13,7 @@ public class PlayerResources : MonoBehaviour
     public float warpEnergyCost = 10f;
 
     [Header("Time Settings")]
-    public float maxTime = 900f;
+    public float maxTime = 600f;
     public float timeRemaining;
     public float warpTimePenalty = 5f;
 

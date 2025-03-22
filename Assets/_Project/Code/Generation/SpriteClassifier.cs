@@ -9,6 +9,7 @@ public class SpriteClassifier : MonoBehaviour
     public Sprite[] iceWorldSprites;
     public Sprite[] lavaWorldSprites;
     public Sprite[] noAtmosphereSprites;
+    public Sprite blackSphere;
 
     [Header("Star Sprites")]
     public Sprite[] sunSprites;
@@ -52,6 +53,11 @@ public class SpriteClassifier : MonoBehaviour
 
     private Sprite ChoosePlanetSprite(Planet planet)
     {
+        if (!planet.scanned && !PlanetNameIsEarth(planet))
+        {
+            return blackSphere;
+        }
+
         if (!planet.hasAtmosphere)
         {
             return PickRandom(noAtmosphereSprites);
@@ -87,5 +93,10 @@ public class SpriteClassifier : MonoBehaviour
         }
 
         return PickRandom(drySprites);
+    }
+
+    private bool PlanetNameIsEarth(Planet planet)
+    {
+        return planet.planetName == "Earth";
     }
 }

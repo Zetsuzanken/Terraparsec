@@ -7,6 +7,9 @@ public class Planet : ScriptableObject, ICelestialObject
     public string planetName;
     public bool generatedAsHabitable = false;
 
+    [HideInInspector]
+    public bool scanned = false;
+
     [Header("Orbital Parameters")]
     public float orbitalDistance;
     public float rotationPeriod;

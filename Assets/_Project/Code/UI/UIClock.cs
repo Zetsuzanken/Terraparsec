@@ -17,7 +17,7 @@ public class UIClock : MonoBehaviour
         else Destroy(gameObject);
     }
 
-    void Start()
+    private void Start()
     {
         if (PlayerResources.Instance != null)
         {
@@ -34,7 +34,7 @@ public class UIClock : MonoBehaviour
         }
     }
 
-    void UpdateTimerDisplay(float timeRemaining)
+    private void UpdateTimerDisplay(float timeRemaining)
     {
         int minutes = Mathf.FloorToInt(timeRemaining / 60);
         int seconds = Mathf.FloorToInt(timeRemaining % 60);
@@ -44,13 +44,16 @@ public class UIClock : MonoBehaviour
     public void ShowPenaltyText(float secondsLost)
     {
         penaltyText.text = $"-{secondsLost} Sec";
-        StartCoroutine(ShowPenaltyEffect());
+        StartCoroutine(ShowPenaltyEffect);
     }
 
-    IEnumerator ShowPenaltyEffect()
+    private IEnumerator ShowPenaltyEffect
     {
-        penaltyFader.FadeIn();
-        yield return new WaitForSeconds(1.5f);
-        penaltyFader.FadeOut();
+        get
+        {
+            penaltyFader.FadeIn();
+            yield return new WaitForSeconds(1.5f);
+            penaltyFader.FadeOut();
+        }
     }
 }

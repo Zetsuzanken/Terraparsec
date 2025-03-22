@@ -24,12 +24,12 @@ public class ScorePanelController : MonoBehaviour
         mainMenuButton.onClick.AddListener(() => UIManager.Instance.GoToMainMenu());
     }
 
-    public void ShowScorePanel(Planet chosenPlanet)
+    public void ShowScorePanel(Planet chosenPlanet, int finalscore)
     {
-        StartCoroutine(ShowScoreRoutine(chosenPlanet));
+        StartCoroutine(ShowScoreRoutine(chosenPlanet, finalscore));
     }
 
-    private IEnumerator ShowScoreRoutine(Planet p)
+    private IEnumerator ShowScoreRoutine(Planet p, int f)
     {
         UIManager.Instance.FadeOverlayIn();
         yield return new WaitForSecondsRealtime(UIManager.Instance.FadeOverlayDuration);
@@ -46,13 +46,17 @@ public class ScorePanelController : MonoBehaviour
             yield return new WaitForSecondsRealtime(descriptorDelay);
         }
 
-        int finalScore = PlanetScoreCalculator.ScorePlanet(p);
+        int finalScore = PlanetScoreCalculator.ScorePlanet(p, f);
         yield return StartCoroutine(TypeLetters($"TOTAL: {finalScore}", scoreTotalText));
     }
 
     private string[] GetParameterDescriptors(Planet p)
     {
-        string[] lines = new string[10];
+        int minutes = Mathf.FloorToInt(PlayerResources.Instance.timeRemaining / 60);
+        int seconds = Mathf.FloorToInt(PlayerResources.Instance.timeRemaining % 60);
+        string time = $"{minutes:00}:{seconds:00}";
+
+        string[] lines = new string[11];
         lines[0] = TierToDescriptor(PlanetScoreCalculator.ScoreOrbit(p.orbitalDistance));
         lines[1] = TierToDescriptor(PlanetScoreCalculator.ScoreRotation(p.rotationPeriod));
         lines[2] = TierToDescriptor(PlanetScoreCalculator.ScoreEcc(p.eccentricity));
@@ -63,6 +67,7 @@ public class ScorePanelController : MonoBehaviour
         lines[7] = TierToDescriptor(PlanetScoreCalculator.ScoreAtmosphere(p));
         lines[8] = TierToDescriptor(PlanetScoreCalculator.ScorePressure(p.surfacePressure));
         lines[9] = TierToDescriptor(PlanetScoreCalculator.ScoreTemperature(p.averageSurfaceTemperature));
+        lines[10] = time;
 
         return lines;
     }

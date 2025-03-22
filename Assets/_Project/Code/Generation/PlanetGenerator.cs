@@ -60,7 +60,19 @@ public class PlanetGenerator : MonoBehaviour
     private Planet CreateUniquePlanetData()
     {
         planetCount++;
-        return planetCount % 3 == 0 ? CreateHabitablePlanetData() : CreateRandomPlanetData();
+
+        if (planetCount % 3 == 0)
+        {
+            return CreateHabitablePlanetData();
+        }
+        else if (planetCount % 2 == 0 && Random.value < 0.25f)
+        {
+            return CreateHabitablePlanetData();
+        }
+        else
+        {
+            return CreateRandomPlanetData();
+        }
     }
 
     private Planet CreateRandomPlanetData()

@@ -53,7 +53,7 @@ public static class PlanetScoreCalculator
     private const int TIER_4 = 25;
     private const int TIER_5 = 0;
 
-    public static int ScorePlanet(Planet p)
+    public static int ScorePlanet(Planet p, int f)
     {
         int total = 0;
         total += ScoreOrbit(p.orbitalDistance);
@@ -66,11 +66,7 @@ public static class PlanetScoreCalculator
         total += ScoreAtmosphere(p);
         total += ScorePressure(p.surfacePressure);
         total += ScoreTemperature(p.averageSurfaceTemperature);
-
-        if (total > 1000)
-        {
-            total = 1000;
-        }
+        total += f;
 
         return total;
     }

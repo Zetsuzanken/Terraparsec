@@ -71,6 +71,8 @@ public class UIManager : MonoBehaviour
     [HideInInspector]
     public bool gameHasEnded = false;
 
+    public SpriteClassifier spriteClassifier;
+
     private void Awake()
     {
         if (Instance == null)
@@ -146,18 +148,17 @@ public class UIManager : MonoBehaviour
         var scanBtn = scanPanel.GetComponentInChildren<Button>();
         scanBtn.onClick.RemoveAllListeners();
 
-        bool isEarth = (caller.CompareTag("Finish"));
-        if (isEarth)
+        if (caller.CompareTag("Finish"))
         {
             scanBtn.onClick.AddListener(() =>
             {
-                ShowInfoPanel(data);
+                ShowInfoPanel(data, caller);
             });
 
             var btnText = secondaryActionButton.GetComponentInChildren<TextMeshProUGUI>();
             btnText.text = "End Journey";
 
-            bool planetMarked = (PlanetMarker.Instance.chosenPlanet != null);
+            bool planetMarked = PlanetMarker.Instance.chosenPlanet != null;
             secondaryActionButton.interactable = planetMarked;
 
             secondaryActionButton.onClick.RemoveAllListeners();
@@ -171,7 +172,7 @@ public class UIManager : MonoBehaviour
             scanBtn.onClick.AddListener(() =>
             {
                 PlayerResources.Instance.HandleScan();
-                ShowInfoPanel(data);
+                ShowInfoPanel(data, caller);
             });
 
             secondaryActionButton.onClick.RemoveAllListeners();
@@ -232,7 +233,7 @@ public class UIManager : MonoBehaviour
             var label = newButtonObj.transform.Find("Label").GetComponent<TextMeshProUGUI>();
 
 
-            if (!w.isStar && !w.visited)
+            if (!w.isStar && !w.visited && !(w.warpName == "Earth"))
             {
                 icon.sprite = placeholderSprite;
             }
@@ -252,8 +253,14 @@ public class UIManager : MonoBehaviour
         warpPanelFader.FadeIn();
     }
 
-    public void ShowInfoPanel(ICelestialObject data)
+    public void ShowInfoPanel(ICelestialObject data, GameObject caller)
     {
+        if (data is Planet planetData && !planetData.scanned == true)
+        {
+            planetData.scanned = true;
+            spriteClassifier.AssignSprite(caller);
+        }
+
         infoText.text = data.DisplayInfo;
         scanPanelFader.FadeOut();
         infoPanelFader.FadeIn();
@@ -392,6 +399,11 @@ public class UIManager : MonoBehaviour
 
     public void OnCheckPlanetButtonClicked()
     {
+        if (WarpManager.Instance.hasLeftEarth)
+        {
+            PlayerResources.Instance.DeductTime(5f);
+        }
+
         infoText.text = PlanetMarker.Instance.chosenPlanet == null
             ? "You haven't marked any planet yet!"
             : PlanetMarker.Instance.chosenPlanet.DisplayInfo;
@@ -442,10 +454,12 @@ public class UIManager : MonoBehaviour
     private void EndJourney()
     {
         CloseConfirmPanel();
+
         Planet chosen = PlanetMarker.Instance.chosenPlanet;
+        int bonus = Mathf.FloorToInt(PlayerResources.Instance.timeRemaining) / 10;
 
         ScorePanelController scoreCtrl = FindObjectOfType<ScorePanelController>();
-        scoreCtrl.ShowScorePanel(chosen);
+        scoreCtrl.ShowScorePanel(chosen, bonus);
     }
 
     public void TriggerGameOver(string reason)

@@ -531,7 +531,7 @@ MonoBehaviour:
   maxEnergy: 100
   energy: 0
   scanEnergyCost: 5
-  warpEnergyCost: 10
+  warpEnergyCost: 15
   maxTime: 600
   timeRemaining: 0
   warpTimePenalty: 5

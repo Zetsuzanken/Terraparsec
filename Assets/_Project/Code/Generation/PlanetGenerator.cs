@@ -17,11 +17,11 @@ public struct AtmosphereCombo
 
 public class PlanetGenerator : MonoBehaviour
 {
-    [Header("Orbital Distance (AU)")]
+    [Header("Orbital distance (AU)")]
     public float minOrbitalDistance = 0.01f;
     public float maxOrbitalDistance = 1000f;
 
-    [Header("Rotation Period (hours)")]
+    [Header("Rotation period (hours)")]
     public float minRotationPeriod = 4f;
     public float maxRotationPeriod = 1000f;
 
@@ -29,17 +29,17 @@ public class PlanetGenerator : MonoBehaviour
     public float minEccentricity = 0f;
     public float maxEccentricity = 1f;
 
-    [Header("Atmosphere Chance")]
+    [Header("Atmosphere chance")]
     [Range(0f, 1f)]
     public float atmosphereChance = 0.7f;
 
-    [Header("Mass & Radius (Earth Units)")]
+    [Header("Mass & radius (Earth units)")]
     public float minMass = 0.01f;
     public float maxMass = 4000f;
     public float minRadius = 0.3f;
     public float maxRadius = 20f;
 
-    [Header("Atmosphere Combos")]
+    [Header("Atmosphere combos")]
     public AtmosphereCombo[] possibleAtmospheres =
 {
         new("H2", "He", "CH4"),
@@ -47,7 +47,7 @@ public class PlanetGenerator : MonoBehaviour
         new("CO2", "N2", "Ar"),
     };
 
-    [Header("Surface Pressure (atm)")]
+    [Header("Surface pressure (atm)")]
     public float minPressure = 0f;
     public float maxPressure = 100f;
 

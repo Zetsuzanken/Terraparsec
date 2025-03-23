@@ -10,7 +10,7 @@ public class PlayerResources : MonoBehaviour
     public float maxEnergy = 100f;
     public float energy;
     public float scanEnergyCost = 5f;
-    public float warpEnergyCost = 10f;
+    public float warpEnergyCost = 15f;
 
     [Header("Time Settings")]
     public float maxTime = 600f;

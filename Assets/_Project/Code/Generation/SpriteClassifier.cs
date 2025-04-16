@@ -26,6 +26,16 @@ public class SpriteClassifier : MonoBehaviour
 
     public void AssignSprite(GameObject targetGO)
     {
+        if (targetGO.CompareTag("Finish"))
+        {
+            if (targetGO.TryGetComponent(out SpriteRenderer sr) &&
+                targetGO.TryGetComponent(out Warpable w))
+            {
+                w.warpIcon = sr.sprite;
+            }
+            return;
+        }
+
         if (!targetGO.TryGetComponent(out ObjectClickHandler handler))
         {
             return;

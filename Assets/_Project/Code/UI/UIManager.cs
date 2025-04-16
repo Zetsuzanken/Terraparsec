@@ -59,6 +59,10 @@ public class UIManager : MonoBehaviour
     public Button restartButton;
     public Button mainMenuButton;
 
+    [Header("Tutorial Panel")]
+    public GameObject tutorialPanel;
+    public Button tutorialButton;
+
     [Header("Spaceship Reference")]
     public Transform spaceship;
 
@@ -124,6 +128,9 @@ public class UIManager : MonoBehaviour
 
         mainMenuButton.onClick.RemoveAllListeners();
         mainMenuButton.onClick.AddListener(GoToMainMenu);
+
+        tutorialButton.onClick.RemoveAllListeners();
+        tutorialButton.onClick.AddListener(OpenTutorialPanel);
     }
 
     public void OpenScanPanel(GameObject caller, ICelestialObject data)
@@ -251,6 +258,16 @@ public class UIManager : MonoBehaviour
         }
 
         warpPanelFader.FadeIn();
+    }
+
+    public void OpenTutorialPanel()
+    {
+        CloseAllPanels();
+        Time.timeScale = 0;
+        if (tutorialPanel.TryGetComponent(out PanelFader tutorialFader))
+        {
+            tutorialFader.FadeIn();
+        }
     }
 
     public void ShowInfoPanel(ICelestialObject data, GameObject caller)
@@ -453,6 +470,8 @@ public class UIManager : MonoBehaviour
 
     private void EndJourney()
     {
+        PlayerResources.Instance.StopTimer();
+
         CloseConfirmPanel();
 
         Planet chosen = PlanetMarker.Instance.chosenPlanet;

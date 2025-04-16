@@ -205,9 +205,9 @@ public class PlanetGenerator : MonoBehaviour
         float devO2 = Random.Range(-devRange, devRange);
         float devAr = Random.Range(-devRange, devRange);
 
-        float n2 = baseN2 + devN2;
-        float o2 = baseO2 + devO2;
-        float ar = baseAr + devAr;
+        float n2 = Mathf.Max(baseN2 + devN2, 0f);
+        float o2 = Mathf.Max(baseO2 + devO2, 0f);
+        float ar = Mathf.Max(baseAr + devAr, 0f);
 
         float sum = n2 + o2 + ar;
         float scale = 100f / sum;

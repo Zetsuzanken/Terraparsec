@@ -11,6 +11,7 @@ public class IntroSequenceController : MonoBehaviour
     public TextMeshProUGUI introText;
     public PanelFader tutorialPanel;
     public Button tutorialCloseButton;
+    public Button skipButton;
 
     [Header("Timing Settings")]
     public float letterDelay = 0.05f;
@@ -24,10 +25,15 @@ public class IntroSequenceController : MonoBehaviour
         "But hurry… Time is of the essence."
     };
 
+    private Coroutine introCoroutine;
+
     private void Start()
     {
         tutorialCloseButton.onClick.RemoveAllListeners();
         tutorialCloseButton.onClick.AddListener(CloseTutorialPanel);
+
+        skipButton.onClick.RemoveAllListeners();
+        skipButton.onClick.AddListener(SkipIntro);
 
         Time.timeScale = 0f;
 
@@ -36,7 +42,7 @@ public class IntroSequenceController : MonoBehaviour
             canvasGroup.blocksRaycasts = true;
         }
 
-        StartCoroutine(RunIntroSequence());
+        introCoroutine = StartCoroutine(RunIntroSequence());
     }
 
     private IEnumerator RunIntroSequence()
@@ -70,6 +76,26 @@ public class IntroSequenceController : MonoBehaviour
         }
     }
 
+    public void SkipIntro()
+    {
+        if (introCoroutine != null)
+        {
+            StopCoroutine(introCoroutine);
+            introCoroutine = null;
+        }
+
+        introPanel.FadeOut();
+        FadeOverlayOut();
+
+        StartCoroutine(DelayedTutorialPanel());
+    }
+
+    private IEnumerator DelayedTutorialPanel()
+    {
+        yield return new WaitForSecondsRealtime(fadeOverlay.fadeDuration);
+        tutorialPanel.FadeIn();
+    }
+
     private void FadeOverlayOut()
     {
         fadeOverlay.FadeOut();
@@ -79,7 +105,6 @@ public class IntroSequenceController : MonoBehaviour
     private IEnumerator ResetRaycastBlock()
     {
         yield return new WaitForSecondsRealtime(fadeOverlay.fadeDuration);
-
         if (fadeOverlay.TryGetComponent(out CanvasGroup canvasGroup))
         {
             canvasGroup.blocksRaycasts = false;

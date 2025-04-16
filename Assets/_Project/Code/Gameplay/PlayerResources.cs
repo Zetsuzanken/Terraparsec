@@ -43,6 +43,11 @@ public class PlayerResources : MonoBehaviour
         }
     }
 
+    public void StopTimer()
+    {
+        isTimeRunning = false;
+    }
+
     private IEnumerator CountdownTimer()
     {
         while (isTimeRunning)

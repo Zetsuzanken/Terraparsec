@@ -23,15 +23,24 @@ public class Star : ScriptableObject, ICelestialObject
             return;
         }
 
-        while (true)
+        List<string> available = new();
+        foreach (string n in starNames)
         {
-            if (!usedNames.Contains(starNames[Random.Range(0, starNames.Length)]))
+            if (!usedNames.Contains(n))
             {
-                usedNames.Add(starNames[Random.Range(0, starNames.Length)]);
-                starName = starNames[Random.Range(0, starNames.Length)];
-                break;
+                available.Add(n);
             }
         }
+
+        if (available.Count == 0)
+        {
+            usedNames.Clear();
+            available.AddRange(starNames);
+        }
+
+        string choice = available[Random.Range(0, available.Count)];
+        _ = usedNames.Add(choice);
+        starName = choice;
     }
 
     public string Name => starName;

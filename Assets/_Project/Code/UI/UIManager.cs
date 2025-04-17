@@ -416,6 +416,11 @@ public class UIManager : MonoBehaviour
 
     public void OnCheckPlanetButtonClicked()
     {
+        if (warningPanelFader.GetAlpha() > 0f)
+        {
+            return;
+        }
+
         if (WarpManager.Instance.hasLeftEarth)
         {
             PlayerResources.Instance.DeductTime(5f);
@@ -428,7 +433,6 @@ public class UIManager : MonoBehaviour
         CloseAllPanels();
         isInteracting = true;
         Time.timeScale = 0;
-
         infoPanelFader.FadeIn();
     }
 
@@ -484,6 +488,9 @@ public class UIManager : MonoBehaviour
     public void TriggerGameOver(string reason)
     {
         gameHasEnded = true;
+
+        PlayerResources.Instance.SetTime(0f);
+        PlayerResources.Instance.StopTimer();
 
         CloseAllPanels();
         FadeOverlayIn();

@@ -15,8 +15,8 @@ public class IntroSequenceController : MonoBehaviour
 
     [Header("Timing Settings")]
     public float letterDelay = 0.05f;
-    public float lineDelay = 0.7f;
-    public float postIntroDelay = 2f;
+    public float lineDelay = 0.5f;
+    public float postIntroDelay = 3f;
 
     private readonly string[] introLines = new string[]
     {

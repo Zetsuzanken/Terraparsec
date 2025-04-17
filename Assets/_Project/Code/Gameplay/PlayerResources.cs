@@ -22,16 +22,29 @@ public class PlayerResources : MonoBehaviour
     public event Action<float> OnTimeUpdated;
     public event Action<float> OnEnergyUpdated;
 
-    void Awake()
+    private void Awake()
     {
-        if (Instance == null) Instance = this;
-        else Destroy(gameObject);
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
     }
 
-    void Start()
+    private void Start()
     {
         energy = maxEnergy;
         timeRemaining = maxTime;
+    }
+
+    public float SetTime(float newTime)
+    {
+        timeRemaining = newTime;
+        OnTimeUpdated?.Invoke(timeRemaining);
+        return timeRemaining;
     }
 
     public void StartTimer()
@@ -70,7 +83,10 @@ public class PlayerResources : MonoBehaviour
     public void UseEnergy(float amount)
     {
         energy -= amount;
-        if (energy < 0) energy = 0;
+        if (energy < 0)
+        {
+            energy = 0;
+        }
 
         OnEnergyUpdated?.Invoke(energy);
 
@@ -83,7 +99,10 @@ public class PlayerResources : MonoBehaviour
     public void DeductTime(float amount)
     {
         timeRemaining -= amount;
-        if (timeRemaining < 0) timeRemaining = 0;
+        if (timeRemaining < 0)
+        {
+            timeRemaining = 0;
+        }
 
         OnTimeUpdated?.Invoke(timeRemaining);
 

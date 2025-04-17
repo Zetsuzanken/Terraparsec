@@ -66,7 +66,6 @@ public class BrochureController : MonoBehaviour
         isOpen = true;
         Time.timeScale = 0;
 
-        currentPageIndex = 0;
         ShowPage(currentPageIndex);
 
         brochurePanelFader.FadeIn();
@@ -117,5 +116,15 @@ public class BrochureController : MonoBehaviour
             pages[i].SetActive(false);
         }
         pages[index].SetActive(true);
+
+        if (buttonPrevious != null)
+        {
+            buttonPrevious.interactable = index > 0;
+        }
+
+        if (buttonNext != null)
+        {
+            buttonNext.interactable = index < pages.Length - 1;
+        }
     }
 }

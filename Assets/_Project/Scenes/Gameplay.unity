@@ -587,6 +587,7 @@ GameObject:
   - component: {fileID: 119683891}
   - component: {fileID: 119683890}
   - component: {fileID: 119683892}
+  - component: {fileID: 119683893}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -641,6 +642,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   chosenPlanet: {fileID: 0}
+--- !u!114 &119683893
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 119683889}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 01900a77e3accdd4c91ce8902a2a0a88, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &138104310
 GameObject:
   m_ObjectHideFlags: 0
@@ -13980,7 +13993,7 @@ MonoBehaviour:
   skipButton: {fileID: 791859934}
   letterDelay: 0.05
   lineDelay: 0.5
-  postIntroDelay: 1
+  postIntroDelay: 3
 --- !u!1 &1570078423
 GameObject:
   m_ObjectHideFlags: 0

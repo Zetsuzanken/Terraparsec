@@ -2,9 +2,9 @@ using UnityEngine;
 
 public class SpaceshipController : MonoBehaviour
 {
-    public float thrustForce = 1.5f;
-    public float maxSpeed = 7f;
-    public float deceleration = 10f;
+    public float thrustForce = 4f;
+    public float maxSpeed = 8f;
+    public float deceleration = 20f;
 
     private Rigidbody2D rb;
 

@@ -1,11 +1,10 @@
-using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine;
 
 public class PlayerDistanceMonitor : MonoBehaviour
 {
     public static PlayerDistanceMonitor Instance;
 
-    [Header("Tracking Settings")]
     public List<Transform> celestialObjects = new();
     public float maxAllowedDistance = 15f;
 
@@ -13,23 +12,34 @@ public class PlayerDistanceMonitor : MonoBehaviour
     private Transform spaceship;
     private bool warningActive = false;
 
-    void Awake()
+    private void Awake()
     {
-        if (Instance == null) Instance = this;
-        else Destroy(gameObject);
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
     }
 
-    void Start()
+    private void Start()
     {
         spaceship = GameObject.FindGameObjectWithTag("Player").transform;
+
         UpdateClosestObject(FindClosestObject());
     }
 
-    void Update()
+    private void Update()
     {
-        if (closestObject == null) return;
+        if (closestObject == null)
+        {
+            return;
+        }
 
         float distance = Vector2.Distance(spaceship.position, closestObject.position);
+
         if (distance > maxAllowedDistance && !warningActive)
         {
             warningActive = true;
@@ -45,7 +55,7 @@ public class PlayerDistanceMonitor : MonoBehaviour
     {
         float minDistance = Mathf.Infinity;
         Transform nearest = null;
-        foreach (var obj in celestialObjects)
+        foreach (Transform obj in celestialObjects)
         {
             float dist = Vector2.Distance(spaceship.position, obj.position);
             if (dist < minDistance)
@@ -59,8 +69,12 @@ public class PlayerDistanceMonitor : MonoBehaviour
 
     public Warpable GetClosestWarpable()
     {
-        if (closestObject == null) return null;
-        closestObject.TryGetComponent<Warpable>(out var w);
+        if (closestObject == null)
+        {
+            return null;
+        }
+
+        _ = closestObject.TryGetComponent<Warpable>(out Warpable w);
         return w;
     }
 

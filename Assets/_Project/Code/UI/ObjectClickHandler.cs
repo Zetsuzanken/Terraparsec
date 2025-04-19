@@ -4,7 +4,7 @@ public class ObjectClickHandler : MonoBehaviour
 {
     public ScriptableObject objectData;
 
-    void OnMouseDown()
+    private void OnMouseDown()
     {
         if (objectData is ICelestialObject celestialObject)
         {

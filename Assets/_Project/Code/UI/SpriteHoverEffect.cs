@@ -2,16 +2,16 @@ using UnityEngine;
 
 public class SpriteHoverEffect : MonoBehaviour
 {
-    SpriteOutline outline;
-    bool isSelected;
+    private SpriteOutline outline;
+    private bool isSelected;
     private static bool disableHover = false;
 
-    void Start()
+    private void Start()
     {
         outline = GetComponent<SpriteOutline>();
     }
 
-    void OnMouseEnter()
+    private void OnMouseEnter()
     {
         if (!isSelected && !disableHover)
         {
@@ -22,7 +22,7 @@ public class SpriteHoverEffect : MonoBehaviour
         }
     }
 
-    void OnMouseExit()
+    private void OnMouseExit()
     {
         if (!isSelected)
         {

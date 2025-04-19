@@ -11,12 +11,12 @@ public class MainMenuController : MonoBehaviour
 
     private Camera mainCam;
 
-    void Start()
+    private void Start()
     {
         mainCam = Camera.main;
     }
 
-    void Update()
+    private void Update()
     {
         if (mainCam != null)
         {

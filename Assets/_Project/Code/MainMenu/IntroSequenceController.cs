@@ -1,19 +1,18 @@
 using System.Collections;
-using UnityEngine;
 using TMPro;
+using UnityEngine;
 using UnityEngine.UI;
 
 public class IntroSequenceController : MonoBehaviour
 {
-    [Header("UI References")]
     public PanelFader fadeOverlay;
     public PanelFader introPanel;
     public TextMeshProUGUI introText;
     public PanelFader tutorialPanel;
+
     public Button tutorialCloseButton;
     public Button skipButton;
 
-    [Header("Timing Settings")]
     public float letterDelay = 0.05f;
     public float lineDelay = 0.5f;
     public float postIntroDelay = 3f;
@@ -87,7 +86,7 @@ public class IntroSequenceController : MonoBehaviour
         introPanel.FadeOut();
         FadeOverlayOut();
 
-        StartCoroutine(DelayedTutorialPanel());
+        _ = StartCoroutine(DelayedTutorialPanel());
     }
 
     private IEnumerator DelayedTutorialPanel()
@@ -99,7 +98,7 @@ public class IntroSequenceController : MonoBehaviour
     private void FadeOverlayOut()
     {
         fadeOverlay.FadeOut();
-        StartCoroutine(ResetRaycastBlock());
+        _ = StartCoroutine(ResetRaycastBlock());
     }
 
     private IEnumerator ResetRaycastBlock()

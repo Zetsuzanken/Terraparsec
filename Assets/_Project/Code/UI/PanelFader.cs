@@ -1,14 +1,13 @@
-using UnityEngine;
 using System.Collections;
+using UnityEngine;
 
 public class PanelFader : MonoBehaviour
 {
-    [Tooltip("Duration of fade transitions in seconds.")]
     public float fadeDuration = 0.5f;
 
-    CanvasGroup canvasGroup;
+    private CanvasGroup canvasGroup;
 
-    void Awake()
+    private void Awake()
     {
         canvasGroup = GetComponent<CanvasGroup>();
     }
@@ -16,16 +15,16 @@ public class PanelFader : MonoBehaviour
     public void FadeIn()
     {
         StopAllCoroutines();
-        StartCoroutine(FadeCanvasGroup(0, 1));
+        _ = StartCoroutine(FadeCanvasGroup(0, 1));
     }
 
     public void FadeOut()
     {
         StopAllCoroutines();
-        StartCoroutine(FadeCanvasGroup(1, 0));
+        _ = StartCoroutine(FadeCanvasGroup(1, 0));
     }
 
-    IEnumerator FadeCanvasGroup(float startAlpha, float endAlpha)
+    private IEnumerator FadeCanvasGroup(float startAlpha, float endAlpha)
     {
         float elapsedTime = 0;
         while (elapsedTime < fadeDuration)

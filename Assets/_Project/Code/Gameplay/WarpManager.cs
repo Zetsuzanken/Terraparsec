@@ -1,6 +1,6 @@
-using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine;
 
 public class WarpManager : MonoBehaviour
 {
@@ -108,13 +108,13 @@ public class WarpManager : MonoBehaviour
 
     public void WarpTo(Warpable dest)
     {
-        StartCoroutine(WarpSequence(dest));
+        _ = StartCoroutine(WarpSequence(dest));
     }
 
     private IEnumerator WarpSequence(Warpable dest)
     {
         UIManager.Instance.CloseAllPanels();
-        bool departingEarthForTheFirstTime = (!hasLeftEarth && currentDepartingObject != null && IsEarth(currentDepartingObject));
+        bool departingEarthForTheFirstTime = !hasLeftEarth && currentDepartingObject != null && IsEarth(currentDepartingObject);
 
         if (departingEarthForTheFirstTime)
         {

@@ -1,20 +1,18 @@
-using UnityEngine;
-using System.Collections;
 using System;
+using System.Collections;
+using UnityEngine;
 
 public class PlayerResources : MonoBehaviour
 {
     public static PlayerResources Instance;
 
-    [Header("Energy Settings")]
     public float maxEnergy = 100f;
-    public float energy;
+    public float remainingEnergy;
     public float scanEnergyCost = 5f;
     public float warpEnergyCost = 15f;
 
-    [Header("Time Settings")]
     public float maxTime = 600f;
-    public float timeRemaining;
+    public float remainingTime;
     public float warpTimePenalty = 5f;
 
     private bool isTimeRunning = false;
@@ -36,15 +34,16 @@ public class PlayerResources : MonoBehaviour
 
     private void Start()
     {
-        energy = maxEnergy;
-        timeRemaining = maxTime;
+        remainingEnergy = maxEnergy;
+
+        remainingTime = maxTime;
     }
 
     public float SetTime(float newTime)
     {
-        timeRemaining = newTime;
-        OnTimeUpdated?.Invoke(timeRemaining);
-        return timeRemaining;
+        remainingTime = newTime;
+        OnTimeUpdated?.Invoke(remainingTime);
+        return remainingTime;
     }
 
     public void StartTimer()
@@ -52,7 +51,7 @@ public class PlayerResources : MonoBehaviour
         if (!isTimeRunning)
         {
             isTimeRunning = true;
-            StartCoroutine(CountdownTimer());
+            _ = StartCoroutine(CountdownTimer());
         }
     }
 
@@ -65,32 +64,33 @@ public class PlayerResources : MonoBehaviour
     {
         while (isTimeRunning)
         {
-            if (timeRemaining > 0)
+            if (remainingTime > 0)
             {
-                timeRemaining -= Time.unscaledDeltaTime;
-                OnTimeUpdated?.Invoke(timeRemaining);
+                remainingTime -= Time.unscaledDeltaTime;
+                OnTimeUpdated?.Invoke(remainingTime);
             }
             else
             {
-                timeRemaining = 0;
+                remainingTime = 0;
                 isTimeRunning = false;
                 HandleTimeExpired();
             }
+
             yield return null;
         }
     }
 
     public void UseEnergy(float amount)
     {
-        energy -= amount;
-        if (energy < 0)
+        remainingEnergy -= amount;
+        if (remainingEnergy < 0)
         {
-            energy = 0;
+            remainingEnergy = 0;
         }
 
-        OnEnergyUpdated?.Invoke(energy);
+        OnEnergyUpdated?.Invoke(remainingEnergy);
 
-        if (energy <= 0)
+        if (remainingEnergy <= 0)
         {
             UIManager.Instance.TriggerGameOver("You ran out of energy and must now spend an eternity in the cold vacuum of space!");
         }
@@ -98,13 +98,13 @@ public class PlayerResources : MonoBehaviour
 
     public void DeductTime(float amount)
     {
-        timeRemaining -= amount;
-        if (timeRemaining < 0)
+        remainingTime -= amount;
+        if (remainingTime < 0)
         {
-            timeRemaining = 0;
+            remainingTime = 0;
         }
 
-        OnTimeUpdated?.Invoke(timeRemaining);
+        OnTimeUpdated?.Invoke(remainingTime);
 
         if (UIClock.Instance != null)
         {
@@ -130,12 +130,8 @@ public class PlayerResources : MonoBehaviour
 
     public void RefillEnergy()
     {
-        energy = maxEnergy;
-        OnEnergyUpdated?.Invoke(energy);
-    }
+        remainingEnergy = maxEnergy;
 
-    public bool WouldBeStrandedAfterUse(float useAmount)
-    {
-        return (energy - useAmount < warpEnergyCost);
+        OnEnergyUpdated?.Invoke(remainingEnergy);
     }
 }

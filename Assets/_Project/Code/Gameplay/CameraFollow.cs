@@ -3,10 +3,10 @@ using UnityEngine;
 public class CameraFollow : MonoBehaviour
 {
     public Transform target;
-    public float smoothSpeed = 0.125f;
+    public float smoothSpeed = 0.05f;
     public Vector3 offset;
 
-    void FixedUpdate()
+    private void FixedUpdate()
     {
         if (target != null)
         {
@@ -18,7 +18,11 @@ public class CameraFollow : MonoBehaviour
 
     public void SnapToTarget()
     {
-        if (target == null) return;
+        if (target == null)
+        {
+            return;
+        }
+
         Vector3 snapPosition = new(target.position.x + offset.x, target.position.y + offset.y, transform.position.z);
         transform.position = snapPosition;
     }

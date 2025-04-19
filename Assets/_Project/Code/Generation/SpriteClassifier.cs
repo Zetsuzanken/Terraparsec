@@ -2,26 +2,19 @@ using UnityEngine;
 
 public class SpriteClassifier : MonoBehaviour
 {
-    [Header("Planet Sprites")]
     public Sprite[] drySprites;
     public Sprite[] gasGiantSprites;
     public Sprite[] habitableSprites;
     public Sprite[] iceWorldSprites;
     public Sprite[] lavaWorldSprites;
     public Sprite[] noAtmosphereSprites;
-    public Sprite blackSphere;
-
-    [Header("Star Sprites")]
     public Sprite[] sunSprites;
+
+    public Sprite blackSphere;
 
     private Sprite PickRandom(Sprite[] spriteArray)
     {
-        if (spriteArray == null || spriteArray.Length == 0)
-        {
-            return null;
-        }
-
-        return spriteArray[Random.Range(0, spriteArray.Length)];
+        return spriteArray == null || spriteArray.Length == 0 ? null : spriteArray[Random.Range(0, spriteArray.Length)];
     }
 
     public void AssignSprite(GameObject targetGO)
@@ -63,46 +56,25 @@ public class SpriteClassifier : MonoBehaviour
 
     private Sprite ChoosePlanetSprite(Planet planet)
     {
-        if (!planet.scanned && !PlanetNameIsEarth(planet))
-        {
-            return blackSphere;
-        }
-
-        if (!planet.hasAtmosphere)
-        {
-            return PickRandom(noAtmosphereSprites);
-        }
-
-        if (planet.generatedAsHabitable)
-        {
-            return PickRandom(habitableSprites);
-        }
-
-        if (planet.atmosphericComposition.Contains("H2")
+        return !planet.scanned && !PlanetNameIsEarth(planet)
+            ? blackSphere
+            : !planet.hasAtmosphere
+            ? PickRandom(noAtmosphereSprites)
+            : planet.generatedAsHabitable
+            ? PickRandom(habitableSprites)
+            : planet.atmosphericComposition.Contains("H2")
             && planet.atmosphericComposition.Contains("He")
-            && planet.atmosphericComposition.Contains("CH4"))
-        {
-            return PickRandom(gasGiantSprites);
-        }
-
-        if (planet.averageSurfaceTemperature < 273.15f)
-        {
-            return PickRandom(iceWorldSprites);
-        }
-
-        if (planet.averageSurfaceTemperature > 500f)
-        {
-            return PickRandom(lavaWorldSprites);
-        }
-
-        if (planet.atmosphericComposition.Contains("CO2")
+            && planet.atmosphericComposition.Contains("CH4")
+            ? PickRandom(gasGiantSprites)
+            : planet.averageSurfaceTemperature < 273.15f
+            ? PickRandom(iceWorldSprites)
+            : planet.averageSurfaceTemperature > 500f
+            ? PickRandom(lavaWorldSprites)
+            : planet.atmosphericComposition.Contains("CO2")
             && planet.atmosphericComposition.Contains("N2")
-            && planet.atmosphericComposition.Contains("Ar"))
-        {
-            return PickRandom(drySprites);
-        }
-
-        return PickRandom(drySprites);
+            && planet.atmosphericComposition.Contains("Ar")
+            ? PickRandom(drySprites)
+            : PickRandom(drySprites);
     }
 
     private bool PlanetNameIsEarth(Planet planet)

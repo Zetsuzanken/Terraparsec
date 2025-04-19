@@ -1,7 +1,7 @@
+using System.Collections;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using TMPro;
-using System.Collections;
 
 public class ScorePanelController : MonoBehaviour
 {
@@ -26,7 +26,7 @@ public class ScorePanelController : MonoBehaviour
 
     public void ShowScorePanel(Planet chosenPlanet, int finalscore)
     {
-        StartCoroutine(ShowScoreRoutine(chosenPlanet, finalscore));
+        _ = StartCoroutine(ShowScoreRoutine(chosenPlanet, finalscore));
     }
 
     private IEnumerator ShowScoreRoutine(Planet p, int f)
@@ -52,14 +52,14 @@ public class ScorePanelController : MonoBehaviour
 
     private string[] GetParameterDescriptors(Planet p)
     {
-        int minutes = Mathf.FloorToInt(PlayerResources.Instance.timeRemaining / 60);
-        int seconds = Mathf.FloorToInt(PlayerResources.Instance.timeRemaining % 60);
+        int minutes = Mathf.FloorToInt(PlayerResources.Instance.remainingTime / 60);
+        int seconds = Mathf.FloorToInt(PlayerResources.Instance.remainingTime % 60);
         string time = $"{minutes:00}:{seconds:00}";
 
         string[] lines = new string[11];
         lines[0] = TierToDescriptor(PlanetScoreCalculator.ScoreOrbit(p.orbitalDistance));
         lines[1] = TierToDescriptor(PlanetScoreCalculator.ScoreRotation(p.rotationPeriod));
-        lines[2] = TierToDescriptor(PlanetScoreCalculator.ScoreEcc(p.eccentricity));
+        lines[2] = TierToDescriptor(PlanetScoreCalculator.ScoreEccentricity(p.eccentricity));
         lines[3] = TierToDescriptor(PlanetScoreCalculator.ScoreMass(p.mass));
         lines[4] = TierToDescriptor(PlanetScoreCalculator.ScoreRadius(p.radius));
         lines[5] = TierToDescriptor(PlanetScoreCalculator.ScoreDensity(p));

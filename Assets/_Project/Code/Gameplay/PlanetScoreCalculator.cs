@@ -56,9 +56,10 @@ public static class PlanetScoreCalculator
     public static int ScorePlanet(Planet p, int f)
     {
         int total = 0;
+
         total += ScoreOrbit(p.orbitalDistance);
         total += ScoreRotation(p.rotationPeriod);
-        total += ScoreEcc(p.eccentricity);
+        total += ScoreEccentricity(p.eccentricity);
         total += ScoreMass(p.mass);
         total += ScoreRadius(p.radius);
         total += ScoreDensity(p);
@@ -87,6 +88,7 @@ public static class PlanetScoreCalculator
 
         float t2Low = Mathf.Max(ORBIT_EARTH * 0.75f, ORBIT_MIN_HAB);
         float t2High = Mathf.Min(ORBIT_EARTH * 1.25f, ORBIT_MAX_HAB);
+
         return orbitVal >= t2Low && orbitVal <= t2High ? TIER_2 : orbitVal is >= ORBIT_MIN_HAB and <= ORBIT_MAX_HAB ? TIER_3 : TIER_4;
     }
 
@@ -106,10 +108,11 @@ public static class PlanetScoreCalculator
 
         float t2Low = Mathf.Max(ROTATION_EARTH * 0.75f, ROTATION_MIN_HAB);
         float t2High = Mathf.Min(ROTATION_EARTH * 1.25f, ROTATION_MAX_HAB);
+
         return rotVal >= t2Low && rotVal <= t2High ? TIER_2 : rotVal is >= ROTATION_MIN_HAB and <= ROTATION_MAX_HAB ? TIER_3 : TIER_4;
     }
 
-    public static int ScoreEcc(float eccVal)
+    public static int ScoreEccentricity(float eccVal)
     {
         if (eccVal is < ECC_MIN_BROAD or > ECC_MAX_BROAD)
         {
@@ -125,6 +128,7 @@ public static class PlanetScoreCalculator
 
         float t2Low = Mathf.Max(ECC_EARTH * 0.75f, ECC_MIN_HAB);
         float t2High = Mathf.Min(ECC_EARTH * 1.25f, ECC_MAX_HAB);
+
         return eccVal >= t2Low && eccVal <= t2High ? TIER_2 : eccVal is >= ECC_MIN_HAB and <= ECC_MAX_HAB ? TIER_3 : TIER_4;
     }
 
@@ -144,6 +148,7 @@ public static class PlanetScoreCalculator
 
         float t2Low = Mathf.Max(MASS_EARTH * 0.75f, MASS_MIN_HAB);
         float t2High = Mathf.Min(MASS_EARTH * 1.25f, MASS_MAX_HAB);
+
         return massVal >= t2Low && massVal <= t2High ? TIER_2 : massVal is >= MASS_MIN_HAB and <= MASS_MAX_HAB ? TIER_3 : TIER_4;
     }
 
@@ -163,6 +168,7 @@ public static class PlanetScoreCalculator
 
         float t2Low = Mathf.Max(RADIUS_EARTH * 0.75f, RADIUS_MIN_HAB);
         float t2High = Mathf.Min(RADIUS_EARTH * 1.25f, RADIUS_MAX_HAB);
+
         return radiusVal >= t2Low && radiusVal <= t2High ? TIER_2 : radiusVal is >= RADIUS_MIN_HAB and <= RADIUS_MAX_HAB ? TIER_3 : TIER_4;
     }
 
@@ -170,37 +176,20 @@ public static class PlanetScoreCalculator
     {
         float pctDiff = Mathf.Abs(p.Density - DENSITY_EARTH) / DENSITY_EARTH * 100f;
 
-        if (pctDiff <= 10f)
-        {
-            return TIER_1;
-        }
-
-        if (pctDiff <= 25f)
-        {
-            return TIER_2;
-        }
-
-        return pctDiff <= 50f ? TIER_3 : pctDiff <= 100f ? TIER_4 : TIER_5;
+        return pctDiff <= 10f ? TIER_1 : pctDiff <= 25f ? TIER_2 : pctDiff <= 50f ? TIER_3 : pctDiff <= 100f ? TIER_4 : TIER_5;
     }
 
     public static int ScoreGravity(Planet p)
     {
         float pctDiff = Mathf.Abs(p.SurfaceGravity - GRAVITY_EARTH) / GRAVITY_EARTH * 100f;
 
-        if (pctDiff <= 10f)
-        {
-            return TIER_1;
-        }
-
-        if (pctDiff <= 25f)
-        {
-            return TIER_2;
-        }
-
-        return pctDiff <= 50f ? TIER_3 : pctDiff <= 100f ? TIER_4 : TIER_5;
+        return pctDiff <= 10f ? TIER_1 : pctDiff <= 25f ? TIER_2 : pctDiff <= 50f ? TIER_3 : pctDiff <= 100f ? TIER_4 : TIER_5;
     }
 
-    public static int ScoreAtmosphere(Planet p) => !p.hasAtmosphere ? TIER_5 : p.generatedAsHabitable ? TIER_1 : TIER_5;
+    public static int ScoreAtmosphere(Planet p)
+    {
+        return !p.hasAtmosphere ? TIER_5 : p.generatedAsHabitable ? TIER_1 : TIER_5;
+    }
 
     public static int ScorePressure(float pVal)
     {
@@ -218,6 +207,7 @@ public static class PlanetScoreCalculator
 
         float t2Low = Mathf.Max(PRESSURE_EARTH * 0.75f, PRESSURE_MIN_HAB);
         float t2High = Mathf.Min(PRESSURE_EARTH * 1.25f, PRESSURE_MAX_HAB);
+
         return pVal >= t2Low && pVal <= t2High ? TIER_2 : pVal is >= PRESSURE_MIN_HAB and <= PRESSURE_MAX_HAB ? TIER_3 : TIER_4;
     }
 
@@ -237,6 +227,7 @@ public static class PlanetScoreCalculator
 
         float t2Low = Mathf.Max(TEMP_EARTH * 0.75f, TEMP_MIN_HAB);
         float t2High = Mathf.Min(TEMP_EARTH * 1.25f, TEMP_MAX_HAB);
+
         return tVal >= t2Low && tVal <= t2High ? TIER_2 : tVal is >= TEMP_MIN_HAB and <= TEMP_MAX_HAB ? TIER_3 : TIER_4;
     }
 }

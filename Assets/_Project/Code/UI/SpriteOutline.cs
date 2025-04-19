@@ -11,9 +11,9 @@ public class SpriteOutline : MonoBehaviour
     public Color color = Color.white;
     [Range(0, 16)] public int outlineSize = 1;
 
-    SpriteRenderer spriteRenderer;
+    private SpriteRenderer spriteRenderer;
 
-    void OnEnable()
+    private void OnEnable()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
         UpdateOutline(false);
@@ -29,7 +29,7 @@ public class SpriteOutline : MonoBehaviour
         UpdateOutline(false);
     }
 
-    void UpdateOutline(bool outline)
+    private void UpdateOutline(bool outline)
     {
         MaterialPropertyBlock mpb = new();
         spriteRenderer.GetPropertyBlock(mpb);

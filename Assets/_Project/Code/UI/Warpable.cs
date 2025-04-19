@@ -19,7 +19,7 @@ public class Warpable : MonoBehaviour
     [HideInInspector]
     public bool visited;
 
-    void Start()
+    private void Start()
     {
         if (string.IsNullOrEmpty(warpName))
         {

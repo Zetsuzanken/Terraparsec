@@ -1,5 +1,5 @@
-using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine;
 
 [CreateAssetMenu(fileName = "NewStar", menuName = "Celestial Object/Star", order = 1)]
 public class Star : ScriptableObject, ICelestialObject

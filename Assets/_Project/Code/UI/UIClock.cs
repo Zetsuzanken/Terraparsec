@@ -1,20 +1,25 @@
-using UnityEngine;
-using TMPro;
 using System.Collections;
+using TMPro;
+using UnityEngine;
 
 public class UIClock : MonoBehaviour
 {
     public static UIClock Instance;
 
-    [Header("UI Elements")]
     public TextMeshProUGUI timerText;
     public TextMeshProUGUI penaltyText;
     public PanelFader penaltyFader;
 
     private void Awake()
     {
-        if (Instance == null) Instance = this;
-        else Destroy(gameObject);
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
     }
 
     private void Start()
@@ -22,7 +27,7 @@ public class UIClock : MonoBehaviour
         if (PlayerResources.Instance != null)
         {
             PlayerResources.Instance.OnTimeUpdated += UpdateTimerDisplay;
-            UpdateTimerDisplay(PlayerResources.Instance.timeRemaining);
+            UpdateTimerDisplay(PlayerResources.Instance.remainingTime);
         }
     }
 
@@ -44,7 +49,7 @@ public class UIClock : MonoBehaviour
     public void ShowPenaltyText(float secondsLost)
     {
         penaltyText.text = $"-{secondsLost} Sec";
-        StartCoroutine(ShowPenaltyEffect);
+        _ = StartCoroutine(ShowPenaltyEffect);
     }
 
     private IEnumerator ShowPenaltyEffect

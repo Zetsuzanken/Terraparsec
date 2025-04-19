@@ -6,14 +6,14 @@ public class DynamicBackgroundTiling : MonoBehaviour
     public float tileWidth = 19.2f;
     public float buffer = 19.2f;
 
-    void Update()
+    private void Update()
     {
         RepositionTiles();
     }
 
-    void RepositionTiles()
+    private void RepositionTiles()
     {
-        var camPos = Camera.main.transform.position;
+        Vector3 camPos = Camera.main.transform.position;
 
         foreach (GameObject tile in backgroundTiles)
         {
@@ -22,6 +22,7 @@ public class DynamicBackgroundTiling : MonoBehaviour
             tile.transform.position = tilePos;
 
             float distanceX = tile.transform.position.x - camPos.x;
+
             if (distanceX > (tileWidth / 2) + buffer)
             {
                 tile.transform.position -= new Vector3(tileWidth * backgroundTiles.Length, 0, 0);

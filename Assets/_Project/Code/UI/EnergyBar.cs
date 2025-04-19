@@ -1,23 +1,28 @@
+using System.Collections;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using TMPro;
-using System.Collections;
 
 public class EnergyBar : MonoBehaviour
 {
     public static EnergyBar Instance;
 
-    [Header("UI Elements")]
     public Image energyBarFill;
     public TextMeshProUGUI energyText;
 
     private void Awake()
     {
-        if (Instance == null) Instance = this;
-        else Destroy(gameObject);
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
     }
 
-    void Start()
+    private void Start()
     {
         if (PlayerResources.Instance != null)
         {
@@ -39,10 +44,10 @@ public class EnergyBar : MonoBehaviour
     public void UpdateEnergyUI(float newEnergy)
     {
         StopAllCoroutines();
-        StartCoroutine(AnimateEnergyChange(newEnergy));
+        _ = StartCoroutine(AnimateEnergyChange(newEnergy));
     }
 
-    IEnumerator AnimateEnergyChange(float targetEnergy)
+    private IEnumerator AnimateEnergyChange(float targetEnergy)
     {
         float currentEnergy = float.Parse(energyText.text.Replace("%", "")) / 100 * PlayerResources.Instance.maxEnergy;
 

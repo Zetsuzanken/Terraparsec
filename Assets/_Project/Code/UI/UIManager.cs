@@ -1,9 +1,9 @@
+using System.Collections;
+using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-using TMPro;
-using System.Collections.Generic;
-using System.Collections;
 
 public class UIManager : MonoBehaviour
 {
@@ -142,8 +142,8 @@ public class UIManager : MonoBehaviour
 
         DeselectPreviousObject();
         currentlySelectedObject = caller;
-        
-        if (caller.TryGetComponent<SpriteHoverEffect>(out var hoverEffect))
+
+        if (caller.TryGetComponent<SpriteHoverEffect>(out SpriteHoverEffect hoverEffect))
         {
             hoverEffect.SetSelected(true);
         }
@@ -152,7 +152,7 @@ public class UIManager : MonoBehaviour
         Time.timeScale = 0;
 
         scanPanelFader.FadeIn();
-        var scanBtn = scanPanel.GetComponentInChildren<Button>();
+        Button scanBtn = scanPanel.GetComponentInChildren<Button>();
         scanBtn.onClick.RemoveAllListeners();
 
         if (caller.CompareTag("Finish"))
@@ -162,7 +162,7 @@ public class UIManager : MonoBehaviour
                 ShowInfoPanel(data, caller);
             });
 
-            var btnText = secondaryActionButton.GetComponentInChildren<TextMeshProUGUI>();
+            TextMeshProUGUI btnText = secondaryActionButton.GetComponentInChildren<TextMeshProUGUI>();
             btnText.text = "End Journey";
 
             bool planetMarked = PlanetMarker.Instance.chosenPlanet != null;
@@ -186,7 +186,7 @@ public class UIManager : MonoBehaviour
 
             if (data is Star)
             {
-                var buttonText = secondaryActionButton.GetComponentInChildren<TextMeshProUGUI>();
+                TextMeshProUGUI buttonText = secondaryActionButton.GetComponentInChildren<TextMeshProUGUI>();
                 buttonText.text = "Refuel";
                 secondaryActionButton.interactable = true;
 
@@ -197,7 +197,7 @@ public class UIManager : MonoBehaviour
             }
             else if (data is Planet planetData)
             {
-                var buttonText = secondaryActionButton.GetComponentInChildren<TextMeshProUGUI>();
+                TextMeshProUGUI buttonText = secondaryActionButton.GetComponentInChildren<TextMeshProUGUI>();
                 buttonText.text = "Mark";
                 secondaryActionButton.interactable = true;
 
@@ -231,23 +231,16 @@ public class UIManager : MonoBehaviour
             Destroy(child.gameObject);
         }
 
-        foreach (var w in warpables)
+        foreach (Warpable w in warpables)
         {
-            var newButtonObj = Instantiate(destinationButtonPrefab, destinationListParent);
-            var button = newButtonObj.GetComponent<Button>();
+            GameObject newButtonObj = Instantiate(destinationButtonPrefab, destinationListParent);
+            Button button = newButtonObj.GetComponent<Button>();
 
-            var icon = newButtonObj.transform.Find("Icon").GetComponent<Image>();
-            var label = newButtonObj.transform.Find("Label").GetComponent<TextMeshProUGUI>();
+            Image icon = newButtonObj.transform.Find("Icon").GetComponent<Image>();
+            TextMeshProUGUI label = newButtonObj.transform.Find("Label").GetComponent<TextMeshProUGUI>();
 
 
-            if (!w.isStar && !w.visited && !(w.warpName == "Earth"))
-            {
-                icon.sprite = placeholderSprite;
-            }
-            else
-            {
-                icon.sprite = w.warpIcon;
-            }
+            icon.sprite = !w.isStar && !w.visited && !(w.warpName == "Earth") ? placeholderSprite : w.warpIcon;
 
             label.text = w.warpName;
 
@@ -310,7 +303,7 @@ public class UIManager : MonoBehaviour
 
         if (currentlySelectedObject != null)
         {
-            if (currentlySelectedObject.TryGetComponent<SpriteHoverEffect>(out var hoverEffect))
+            if (currentlySelectedObject.TryGetComponent<SpriteHoverEffect>(out SpriteHoverEffect hoverEffect))
             {
                 hoverEffect.SetSelected(false);
             }
@@ -320,7 +313,7 @@ public class UIManager : MonoBehaviour
 
     public void FadeOverlayIn()
     {
-        if (fadeOverlayFader.TryGetComponent<CanvasGroup>(out var canvasGroup))
+        if (fadeOverlayFader.TryGetComponent<CanvasGroup>(out CanvasGroup canvasGroup))
         {
             canvasGroup.blocksRaycasts = true;
         }
@@ -330,24 +323,24 @@ public class UIManager : MonoBehaviour
     public void FadeOverlayOut()
     {
         fadeOverlayFader.FadeOut();
-        StartCoroutine(ResetRaycastBlock());
+        _ = StartCoroutine(ResetRaycastBlock());
     }
 
     private IEnumerator ResetRaycastBlock()
     {
         yield return new WaitForSecondsRealtime(FadeOverlayDuration);
 
-        if (fadeOverlayFader.TryGetComponent<CanvasGroup>(out var canvasGroup))
+        if (fadeOverlayFader.TryGetComponent<CanvasGroup>(out CanvasGroup canvasGroup))
         {
             canvasGroup.blocksRaycasts = false;
         }
     }
 
-    void DeselectPreviousObject()
+    private void DeselectPreviousObject()
     {
         if (currentlySelectedObject != null)
         {
-            if (currentlySelectedObject.TryGetComponent<SpriteHoverEffect>(out var prevHover))
+            if (currentlySelectedObject.TryGetComponent<SpriteHoverEffect>(out SpriteHoverEffect prevHover))
             {
                 prevHover.SetSelected(false);
             }
@@ -362,7 +355,7 @@ public class UIManager : MonoBehaviour
         Time.timeScale = 0;
 
         string objectName = closestObject.name;
-        if (closestObject.TryGetComponent<ObjectClickHandler>(out var oh) && oh.objectData is ICelestialObject co)
+        if (closestObject.TryGetComponent<ObjectClickHandler>(out ObjectClickHandler oh) && oh.objectData is ICelestialObject co)
         {
             objectName = co.Name;
         }
@@ -387,7 +380,7 @@ public class UIManager : MonoBehaviour
         {
             FadeOverlayIn();
             CloseAllPanels();
-            StartCoroutine(ReturnSequence());
+            _ = StartCoroutine(ReturnSequence());
         }
     }
 
@@ -398,12 +391,12 @@ public class UIManager : MonoBehaviour
         if (lastClosestObject != null && spaceship != null)
         {
             spaceship.position = new Vector3(lastClosestObject.position.x, spaceship.position.y, spaceship.position.z);
-            if (Camera.main.TryGetComponent<CameraFollow>(out var camFollow))
+            if (Camera.main.TryGetComponent<CameraFollow>(out CameraFollow camFollow))
             {
                 camFollow.SnapToTarget();
             }
 
-            if (spaceship.TryGetComponent<Rigidbody2D>(out var rb))
+            if (spaceship.TryGetComponent<Rigidbody2D>(out Rigidbody2D rb))
             {
                 rb.velocity = Vector2.zero;
                 rb.angularVelocity = 0f;
@@ -479,7 +472,7 @@ public class UIManager : MonoBehaviour
         CloseConfirmPanel();
 
         Planet chosen = PlanetMarker.Instance.chosenPlanet;
-        int bonus = Mathf.FloorToInt(PlayerResources.Instance.timeRemaining) / 10;
+        int bonus = Mathf.FloorToInt(PlayerResources.Instance.remainingTime) / 10;
 
         ScorePanelController scoreCtrl = FindObjectOfType<ScorePanelController>();
         scoreCtrl.ShowScorePanel(chosen, bonus);
@@ -489,12 +482,12 @@ public class UIManager : MonoBehaviour
     {
         gameHasEnded = true;
 
-        PlayerResources.Instance.SetTime(0f);
+        _ = PlayerResources.Instance.SetTime(0f);
         PlayerResources.Instance.StopTimer();
 
         CloseAllPanels();
         FadeOverlayIn();
-        StartCoroutine(ShowEndGame(reason));
+        _ = StartCoroutine(ShowEndGame(reason));
     }
 
     private IEnumerator ShowEndGame(string reason)

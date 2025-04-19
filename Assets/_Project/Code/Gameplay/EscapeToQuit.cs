@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class EscapeToQuit : MonoBehaviour
 {
-    void Update()
+    private void Update()
     {
         if (Input.GetKeyDown(KeyCode.Escape))
         {

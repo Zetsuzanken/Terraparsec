@@ -6,7 +6,7 @@ public class PlanetSpawner : MonoBehaviour
     public SpriteClassifier spriteClassifier;
     public GameObject[] planetObjects;
 
-    void Start()
+    private void Start()
     {
         foreach (GameObject planetGO in planetObjects)
         {

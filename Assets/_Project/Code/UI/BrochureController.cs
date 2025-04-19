@@ -3,17 +3,14 @@ using UnityEngine.UI;
 
 public class BrochureController : MonoBehaviour
 {
-    [Header("References to the Brochure UI")]
     public GameObject brochurePanel;
     public PanelFader brochurePanelFader;
     public GameObject[] pages;
 
-    [Header("Navigation Buttons")]
     public Button buttonPrevious;
     public Button buttonNext;
     public Button buttonClose;
 
-    [Header("Button to open the Brochure")]
     public Button openBrochureButton;
 
     private int currentPageIndex = 0;

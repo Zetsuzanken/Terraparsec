@@ -73,7 +73,7 @@ public class PlanetGenerator : MonoBehaviour
         newPlanet.planetName = GeneratePlanetName();
         newPlanet.orbitalDistance = LogDistribution(minOrbitalDistance, maxOrbitalDistance);
 
-        float ecc = WeightedRange(minEccentricity, maxEccentricity, 1.2f);
+        float ecc = LogDistribution(minEccentricity, maxEccentricity);
 
         newPlanet.eccentricity = Mathf.Round(ecc * 10000f) / 10000f;
         newPlanet.rotationPeriod = LogDistribution(minRotationPeriod, maxRotationPeriod);
@@ -88,7 +88,7 @@ public class PlanetGenerator : MonoBehaviour
             int comboIndex = Random.Range(0, possibleAtmospheres.Length);
             AtmosphereCombo chosenCombo = possibleAtmospheres[comboIndex];
             newPlanet.atmosphericComposition = GenerateAtmosphericComposition(chosenCombo);
-            newPlanet.surfacePressure = Random.Range(minPressure, maxPressure);
+            newPlanet.surfacePressure = LogDistribution(minPressure, maxPressure);
         }
         else
         {
@@ -137,13 +137,6 @@ public class PlanetGenerator : MonoBehaviour
                 warpable.UpdateWarpableNameFromObjectData();
             }
         }
-    }
-
-    private float WeightedRange(float minVal, float maxVal, float exponent)
-    {
-        float rand01 = Random.value;
-        float weighted = Mathf.Pow(rand01, exponent);
-        return minVal + ((maxVal - minVal) * weighted);
     }
 
     private float LogDistribution(float minVal, float maxVal)

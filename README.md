@@ -1,7 +1,7 @@
 # Terraparsec
 A 2D simulation game of exoplanetary survey and space exploration designed to offer an engaging yet informative experience that broadens players’ knowledge of astronomy.
 
-Available for playing [here](https://zetsuzanken.itch.io/terraparsec). (currently restricted)
+Available for playing [here](https://zetsuzanken.itch.io/terraparsec).
 
 ## Asset Credits
 

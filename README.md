@@ -1,7 +1,14 @@
 # Terraparsec
-A 2D simulation game of exoplanetary survey and space exploration designed to offer an engaging yet informative experience that broadens players’ knowledge of astronomy.
 
 Available for download and play in the **[Releases](https://github.com/Zetsuzanken/Terraparsec/releases)** section. Simply download, unzip, and execute **Terraparsec.exe**.
+
+## Gameplay & Objectives
+
+Your singular mission in **Terraparsec** is to explore distant star systems and find the **most habitable exoplanet** to serve as a future home for humanity.
+
+The core gameplay loop involves navigating a 2D space and **warping** between celestial objects. You must use your ship's scanner to reveal a planet's randomized scientific parameters, such as orbital distance, mass, and atmospheric composition.
+
+The game uniquely integrates scientific knowledge acquisition: success depends on consulting the in-game **Exoplanet Brochure** to understand and apply real-world astronomical concepts and principles of planetary habitability. Making successful in-game decisions based on this knowledge is crucial for finding the best planet and achieving a high score.
 
 ## Asset Credits
 
